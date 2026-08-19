@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.weather_aos"
+    namespace = "com.tuan.weatherworld"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.weather_aos"
+        applicationId = "com.tuan.weatherworld"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

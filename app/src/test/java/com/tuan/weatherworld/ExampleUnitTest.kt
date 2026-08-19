@@ -1,4 +1,4 @@
-package com.example.weather_aos
+package com.tuan.weatherworld
 
 import org.junit.Test
 

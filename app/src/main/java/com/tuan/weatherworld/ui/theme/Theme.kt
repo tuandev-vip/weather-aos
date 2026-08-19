@@ -1,4 +1,4 @@
-package com.example.weather_aos.ui.theme
+package com.tuan.weatherworld.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -34,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun WeatheraosTheme(
+fun WeatherWorldTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
