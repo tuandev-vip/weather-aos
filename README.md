@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Project foundation only** — project đã build thành công, chưa có màn hình thời tiết và chưa kết nối API.
+> Trạng thái hiện tại: **Design system ready** — foundation và bộ token light/dark đã hoàn thành; chưa có màn hình thời tiết và chưa kết nối API.
 
 ## Mục tiêu học tập
 
