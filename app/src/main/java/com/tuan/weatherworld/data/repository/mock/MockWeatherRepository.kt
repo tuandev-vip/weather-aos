@@ -2,8 +2,9 @@ package com.tuan.weatherworld.data.repository.mock
 
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.repository.WeatherRepository
+import javax.inject.Inject
 
-class MockWeatherRepository : WeatherRepository {
+class MockWeatherRepository @Inject constructor() : WeatherRepository {
     override suspend fun getWeather(cityName: String): Result<Weather> {
         val weather = MockWeatherData.listWeather.firstOrNull { item ->
             item.cityName.trim().equals(

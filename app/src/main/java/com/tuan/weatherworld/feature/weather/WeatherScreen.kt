@@ -9,26 +9,42 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tuan.weatherworld.R
 import com.tuan.weatherworld.core.design.WeatherTheme
+import com.tuan.weatherworld.data.model.Weather
 
 @Composable
 fun WeatherScreen(
-    cityName: String,
-    temperature: Int,
-    weatherCurrent: String,
-    highTemperature: Int,
-    lowTemperature: Int,
     onOpenLocations: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: WeatherViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    WeatherContent(
+        state = state,
+        onOpenLocations = onOpenLocations,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun WeatherContent(
+    state: WeatherUiState,
+    onOpenLocations: () -> Unit,
+    modifier: Modifier,
 ) {
     val rainyColors = WeatherTheme.conditionColors.rainy
 
@@ -61,24 +77,33 @@ fun WeatherScreen(
             )
         }
 
-        WeatherDetails(
-            cityName = cityName,
-            temperature = temperature,
-            weatherCurrent = weatherCurrent,
-            highTemperature = highTemperature,
-            lowTemperature = lowTemperature,
-            contentColor = rainyColors.content,
-        )
+        when (val currentState = state) {
+            WeatherUiState.Loading -> {
+                CircularProgressIndicator(
+                    color = rainyColors.content,
+                )
+            }
+
+            is WeatherUiState.Error -> {
+                Text(
+                    text = currentState.message,
+                    color = rainyColors.content,
+                )
+            }
+
+            is WeatherUiState.Success -> {
+                WeatherDetails(
+                    weather = currentState.weather,
+                    contentColor = rainyColors.content,
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun WeatherDetails(
-    cityName: String,
-    temperature: Int,
-    weatherCurrent: String,
-    highTemperature: Int,
-    lowTemperature: Int,
+    weather: Weather,
     contentColor: Color,
 ) {
     Column(
@@ -86,17 +111,17 @@ private fun WeatherDetails(
         verticalArrangement = Arrangement.spacedBy(WeatherTheme.spacing.space8),
     ) {
         Text(
-            text = cityName,
+            text = weather.cityName,
             style = WeatherTheme.textStyles.city,
             color = contentColor,
         )
         Text(
-            text = stringResource(R.string.weather_temperature_format, temperature),
+            text = stringResource(R.string.weather_temperature_format, weather.temperature),
             style = WeatherTheme.textStyles.temperature,
             color = contentColor,
         )
         Text(
-            text = weatherCurrent,
+            text = weather.weatherCondition,
             style = WeatherTheme.textStyles.sectionTitle,
             color = contentColor,
         )
@@ -107,7 +132,7 @@ private fun WeatherDetails(
             Text(
                 text = stringResource(
                     R.string.weather_high_temperature_format,
-                    highTemperature,
+                    weather.highTemperature,
                 ),
                 style = WeatherTheme.textStyles.bodyStrong,
                 color = contentColor,
@@ -115,7 +140,7 @@ private fun WeatherDetails(
             Text(
                 text = stringResource(
                     R.string.weather_low_temperature_format,
-                    lowTemperature,
+                    weather.lowTemperature,
                 ),
                 style = WeatherTheme.textStyles.bodyStrong,
                 color = contentColor,

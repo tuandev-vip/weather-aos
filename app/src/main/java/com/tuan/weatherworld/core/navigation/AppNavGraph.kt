@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tuan.weatherworld.feature.locations.LocationsScreen
 import com.tuan.weatherworld.feature.splash.SplashScreen
-import com.tuan.weatherworld.feature.weather.WeatherRoute
+import com.tuan.weatherworld.feature.weather.WeatherScreen
 
 /** Single source of truth for navigation between the app's three screens. */
 @Composable
@@ -31,7 +31,7 @@ fun AppNavGraph(
         }
 
         composable(Routes.WEATHER) {
-            WeatherRoute(
+            WeatherScreen(
                 onOpenLocations = {
                     navController.navigate(Routes.LOCATIONS) {
                         launchSingleTop = true

@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Design system ready** — foundation và bộ token light/dark đã hoàn thành; chưa có màn hình thời tiết và chưa kết nối API.
+> Trạng thái hiện tại: **Commit 05 hoàn thành** — app đã có Navigation, Splash, Hilt, Repository mock, WeatherViewModel và StateFlow; chưa kết nối Weather API thật.
 
 ## Mục tiêu học tập
 
@@ -28,12 +28,17 @@ com.tuan.weatherworld
 - Kotlin
 - Jetpack Compose
 - Material 3
+- Navigation Compose
+- AndroidX Core SplashScreen
+- Hilt + KSP
+- ViewModel + Coroutines + StateFlow
+- Lifecycle-aware state collection
 - Gradle Kotlin DSL
 - minSdk 24
 - targetSdk 36
 - compileSdk 36.1
 
-Các công nghệ như Retrofit, Coroutines, Hilt, Room và DataStore chưa được thêm ở giai đoạn này.
+Weather World hiện lấy dữ liệu từ `MockWeatherRepository`. HTTP client, JSON parser, Room và DataStore chưa được thêm ở giai đoạn này.
 
 ## Chạy project
 
@@ -59,30 +64,39 @@ app/build/outputs/apk/debug/app-debug.apk
 ## Lộ trình ngắn
 
 ```text
-Compose UI tĩnh
-    → component dùng lại
-    → model và fake data
-    → ViewModel + StateFlow
-    → MVVM + Repository
+Project foundation
+    → design system
+    → Navigation + Splash
+    → model + mock repository
+    → Hilt + ViewModel + StateFlow
+    → hoàn thiện UI bằng mock data
     → Weather API thật
-    → loading/error/retry
-    → Hilt
+    → tìm kiếm và thêm địa điểm
     → DataStore + Room
     → testing
 ```
 
-Kế hoạch chi tiết theo từng commit nằm trong [`LEARNING_PLAN.md`](LEARNING_PLAN.md).
+Kế hoạch triển khai chính thức theo từng commit nằm trong [`ROADMAP.md`](ROADMAP.md). Nội dung học mở rộng nằm trong [`LEARNING_PLAN.md`](LEARNING_PLAN.md).
 
 ## Nguyên tắc kiến trúc
 
-UI không biết dữ liệu đến từ fake data hay Internet. Khi dự án phát triển, luồng dữ liệu mục tiêu là:
+UI không biết dữ liệu đến từ fake data hay Internet. Luồng hiện tại là:
 
 ```text
-WeatherScreen
+AppNavGraph
+    → WeatherScreen
     → WeatherViewModel
     → WeatherRepository
+    → MockWeatherRepository
+    → MockWeatherData
+```
+
+Khi kết nối API thật, phần sau `WeatherRepository` sẽ được thay bằng:
+
+```text
+WeatherRepositoryImpl
     → WeatherRemoteDataSource
     → Weather API
 ```
 
-Ở những commit đầu, dự án chỉ tập trung vào UI và dữ liệu giả. API, dependency injection và database chỉ được thêm khi đã hiểu tầng đứng trước chúng.
+Hilt chịu trách nhiệm tạo và nối dependency. ViewModel quản lý `WeatherUiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
