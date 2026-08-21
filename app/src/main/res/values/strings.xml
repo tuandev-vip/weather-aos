@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Weather World</string>
+    <string name="weather_temperature_format">%1$d°</string>
+    <string name="weather_high_temperature_format">C:%1$d°</string>
+    <string name="weather_low_temperature_format">T:%1$d°</string>
+    <string name="weather_open_locations">Địa điểm</string>
+    <string name="locations_title">Địa điểm</string>
+    <string name="locations_placeholder">Danh sách và tìm kiếm địa điểm sẽ được hoàn thiện ở commit sau.</string>
+    <string name="navigation_back">Quay lại</string>
 </resources>
