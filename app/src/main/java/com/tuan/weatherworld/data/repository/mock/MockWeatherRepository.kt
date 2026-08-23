@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class MockWeatherRepository @Inject constructor() : WeatherRepository {
     override suspend fun getWeather(cityName: String): Result<Weather> {
-        val weather = MockWeatherData.listWeather.firstOrNull { item ->
+        val weather = MockWeatherData.locations.firstOrNull { item ->
             item.cityName.trim().equals(
                 cityName.trim(),
                 ignoreCase = true,
@@ -14,7 +14,12 @@ class MockWeatherRepository @Inject constructor() : WeatherRepository {
         }
 
         return if (weather != null) {
-            Result.success(weather)
+            Result.success(
+                weather.copy(
+                    hourlyForecast = MockWeatherData.createHourlyForecast(),
+                    dailyForecast = MockWeatherData.createDailyForecast(),
+                ),
+            )
         } else {
             Result.failure(
                 NoSuchElementException(
@@ -22,5 +27,9 @@ class MockWeatherRepository @Inject constructor() : WeatherRepository {
                 ),
             )
         }
+    }
+
+    override suspend fun getLocationsWeather(): Result<List<Weather>> {
+        return Result.success(MockWeatherData.locations)
     }
 }

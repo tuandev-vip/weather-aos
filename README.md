@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 05 hoàn thành** — app đã có Navigation, Splash, Hilt, Repository mock, WeatherViewModel và StateFlow; chưa kết nối Weather API thật.
+> Trạng thái hiện tại: **Commit 06 hoàn thành** — app đã hiển thị thời tiết hiện tại, dự báo 24 giờ, dự báo 10 ngày và danh sách địa điểm bằng mock data; chưa kết nối Weather API hoặc tìm kiếm địa điểm thật.
 
 ## Mục tiêu học tập
 
@@ -34,7 +34,7 @@ com.tuan.weatherworld
 - ViewModel + Coroutines + StateFlow
 - Lifecycle-aware state collection
 - Gradle Kotlin DSL
-- minSdk 24
+- minSdk 26
 - targetSdk 36
 - compileSdk 36.1
 
@@ -46,7 +46,7 @@ Weather World hiện lấy dữ liệu từ `MockWeatherRepository`. HTTP client
 
 1. Mở thư mục `weather-aos` bằng Android Studio.
 2. Chờ Gradle Sync hoàn thành.
-3. Chọn emulator hoặc thiết bị Android API 24 trở lên.
+3. Chọn emulator hoặc thiết bị Android API 26 trở lên.
 4. Chọn cấu hình `app` và nhấn Run.
 
 ### Build bằng terminal trên Windows
@@ -84,11 +84,14 @@ UI không biết dữ liệu đến từ fake data hay Internet. Luồng hiện 
 
 ```text
 AppNavGraph
-    → WeatherScreen
-    → WeatherViewModel
-    → WeatherRepository
-    → MockWeatherRepository
-    → MockWeatherData
+    ├── WeatherScreen → WeatherViewModel
+    └── LocationsScreen → LocationsViewModel
+                              ↓
+                    WeatherRepository
+                              ↓
+                    MockWeatherRepository
+                              ↓
+                       MockWeatherData
 ```
 
 Khi kết nối API thật, phần sau `WeatherRepository` sẽ được thay bằng:
@@ -99,4 +102,6 @@ WeatherRepositoryImpl
     → Weather API
 ```
 
-Hilt chịu trách nhiệm tạo và nối dependency. ViewModel quản lý `WeatherUiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
+Hilt chịu trách nhiệm tạo và nối dependency. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
+
+Route `SETTING` và `SettingScreen` hiện mới là khung điều hướng tạo sớm. Phần cài đặt thật vẫn thuộc Commit 10 trong roadmap.

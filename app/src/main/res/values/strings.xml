@@ -4,7 +4,21 @@
     <string name="weather_high_temperature_format">C:%1$d°</string>
     <string name="weather_low_temperature_format">T:%1$d°</string>
     <string name="weather_open_locations">Địa điểm</string>
-    <string name="locations_title">Địa điểm</string>
-    <string name="locations_placeholder">Danh sách và tìm kiếm địa điểm sẽ được hoàn thiện ở commit sau.</string>
+    <string name="weather_open_settings">Cài đặt</string>
     <string name="navigation_back">Quay lại</string>
+
+    <!-- text of weather of day -->
+    <string name="weather_now">Bây giờ</string>
+
+    <!-- text of weather of day -->
+    <string name="weather_today">Hôm nay</string>
+    <string name="weather_daily_forecast_title">Dự báo 10 ngày</string>
+    <string name="weather_low_high_temperature_format">%1$d° / %2$d°</string>
+    <string name="weather_precipitation_format">%1$d%%</string>
+
+    <!-- location -->
+    <string name="locations_title">Địa điểm yêu thích</string>
+    <string name="locations_add">Thêm địa điểm</string>
+    <!-- Brand -->
+    <string name="weather_brand">DEV BaVi</string>
 </resources>

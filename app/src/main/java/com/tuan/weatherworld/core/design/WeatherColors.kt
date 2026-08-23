@@ -12,43 +12,22 @@ import androidx.compose.ui.graphics.Color
  * one-off color values inside screens or components.
  */
 internal val LightWeatherColorScheme = lightColorScheme(
-    primary = Color(0xFF1565C0),
-    onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFD7E9FF),
-    onPrimaryContainer = Color(0xFF001B3D),
+    primary = Color(0xFFDCD7D7),
     secondary = Color(0xFF006879),
     onSecondary = Color(0xFFFFFFFF),
-    tertiary = Color(0xFFF9A825),
-    onTertiary = Color(0xFF2A1700),
-    background = Color(0xFFF6F9FF),
-    onBackground = Color(0xFF172033),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF172033),
-    surfaceVariant = Color(0xFFE2EAF4),
-    onSurfaceVariant = Color(0xFF475569),
-    outline = Color(0xFF748094),
-    error = Color(0xFFBA1A1A),
-    onError = Color(0xFFFFFFFF),
+    background = Color(0xFF3A3A46),
+    onBackground = Color(0xFF57575D),
+    scrim = Color(0xFFBCBCD2),
+
 )
 
 internal val DarkWeatherColorScheme = darkColorScheme(
-    primary = Color(0xFF90CAF9),
-    onPrimary = Color(0xFF003258),
-    primaryContainer = Color(0xFF0D4771),
-    onPrimaryContainer = Color(0xFFD7E9FF),
-    secondary = Color(0xFF4FD8EB),
-    onSecondary = Color(0xFF00363F),
-    tertiary = Color(0xFFFFCA5C),
-    onTertiary = Color(0xFF432C00),
-    background = Color(0xFF0B1220),
-    onBackground = Color(0xFFE7EDF7),
-    surface = Color(0xFF131D2B),
-    onSurface = Color(0xFFE7EDF7),
-    surfaceVariant = Color(0xFF263446),
-    onSurfaceVariant = Color(0xFFC0CAD8),
-    outline = Color(0xFF8995A8),
-    error = Color(0xFFFFB4AB),
-    onError = Color(0xFF690005),
+    primary = Color(0xFFDCD7D7),
+    secondary = Color(0xFF006879),
+    onSecondary = Color(0xFFFFFFFF),
+    background = Color(0xFF30303A),
+    scrim = Color(0xFFBCBCD2),
+
 )
 
 /**
