@@ -1,7 +1,7 @@
 package com.tuan.weatherworld.di
 
 import com.tuan.weatherworld.data.repository.WeatherRepository
-import com.tuan.weatherworld.data.repository.mock.MockWeatherRepository
+import com.tuan.weatherworld.data.repository.WeatherRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,6 +14,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindWeatherRepository(
-        implementation: MockWeatherRepository,
+        implementation: WeatherRepositoryImpl,
     ): WeatherRepository
 }

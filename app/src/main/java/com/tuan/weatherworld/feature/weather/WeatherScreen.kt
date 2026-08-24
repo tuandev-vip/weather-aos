@@ -164,7 +164,7 @@ fun WWScaffold(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = weather.cityName,
+            text = weather.location.displayName,
             style = WeatherTheme.textStyles.city,
             color = MaterialTheme.colorScheme.primary,
         )

@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 06 hoàn thành** — app đã hiển thị thời tiết hiện tại, dự báo 24 giờ, dự báo 10 ngày và danh sách địa điểm bằng mock data; chưa kết nối Weather API hoặc tìm kiếm địa điểm thật.
+> Trạng thái hiện tại: **Commit 07 hoàn thành** — Weather và Locations đã lấy current, dự báo 24 giờ và dự báo 10 ngày thật từ Open-Meteo; tìm kiếm địa điểm thật thuộc Commit 08.
 
 ## Mục tiêu học tập
 
@@ -33,12 +33,14 @@ com.tuan.weatherworld
 - Hilt + KSP
 - ViewModel + Coroutines + StateFlow
 - Lifecycle-aware state collection
+- Retrofit + Kotlinx Serialization
+- Open-Meteo Forecast API
 - Gradle Kotlin DSL
 - minSdk 26
 - targetSdk 36
 - compileSdk 36.1
 
-Weather World hiện lấy dữ liệu từ `MockWeatherRepository`. HTTP client, JSON parser, Room và DataStore chưa được thêm ở giai đoạn này.
+Weather World hiện lấy dữ liệu thời tiết từ Open-Meteo qua `WeatherRepositoryImpl`. Tọa độ vẫn lấy từ `DefaultWeatherLocations`; Geocoding, Room và DataStore chưa được thêm ở giai đoạn này.
 
 ## Chạy project
 
@@ -80,7 +82,7 @@ Kế hoạch triển khai chính thức theo từng commit nằm trong [`ROADMAP
 
 ## Nguyên tắc kiến trúc
 
-UI không biết dữ liệu đến từ fake data hay Internet. Luồng hiện tại là:
+UI không biết chi tiết Retrofit hoặc Open-Meteo. Luồng hiện tại là:
 
 ```text
 AppNavGraph
@@ -89,19 +91,25 @@ AppNavGraph
                               ↓
                     WeatherRepository
                               ↓
-                    MockWeatherRepository
+                    WeatherRepositoryImpl
                               ↓
-                       MockWeatherData
+                    WeatherRemoteDataSource
+                              ↓
+                OpenMeteoWeatherRemoteDataSource
+                              ↓
+                         WeatherApi
+                              ↓
+             Retrofit + Kotlinx Serialization
+                              ↓
+                  OpenMeteoForecastDto
+                              ↓
+                         toDomain()
+                              ↓
+                           Weather
 ```
 
-Khi kết nối API thật, phần sau `WeatherRepository` sẽ được thay bằng:
+`MockWeatherRepository` và `MockWeatherData` vẫn được giữ trong source để học/test, nhưng `RepositoryModule` runtime đã bind `WeatherRepository` sang `WeatherRepositoryImpl`.
 
-```text
-WeatherRepositoryImpl
-    → WeatherRemoteDataSource
-    → Weather API
-```
-
-Hilt chịu trách nhiệm tạo và nối dependency. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
+Hilt chịu trách nhiệm tạo và nối dependency. Mapper giữ DTO của Open-Meteo ngoài UI và chuyển chúng thành domain model. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
 
 Route `SETTING` và `SettingScreen` hiện mới là khung điều hướng tạo sớm. Phần cài đặt thật vẫn thuộc Commit 10 trong roadmap.

@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Weather(
-    val cityName: String,
+    val location: WeatherLocation,
     val temperature: Int,
     val weatherCondition: String,
     val highTemperature: Int,

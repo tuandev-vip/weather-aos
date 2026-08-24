@@ -1,5 +1,6 @@
 package com.tuan.weatherworld.data.repository.mock
 
+import com.tuan.weatherworld.data.location.DefaultWeatherLocations
 import com.tuan.weatherworld.data.model.DailyForecast
 import com.tuan.weatherworld.data.model.HourlyForecast
 import com.tuan.weatherworld.data.model.Weather
@@ -10,49 +11,50 @@ import java.time.temporal.ChronoUnit
 object MockWeatherData {
     val locations: List<Weather> = listOf(
         Weather(
-            cityName = "Hà Nội",
+            location = DefaultWeatherLocations.haNoi,
             temperature = 27,
             weatherCondition = "Trời mưa",
             highTemperature = 30,
             lowTemperature = 24,
+
         ),
         Weather(
-            cityName = "Ba Vì",
+            location = DefaultWeatherLocations.baVi,
             temperature = 24,
             weatherCondition = "Trời âm u",
             highTemperature = 30,
             lowTemperature = 24,
         ),
         Weather(
-            cityName = "Hải Phòng",
+            location = DefaultWeatherLocations.haiPhong,
             temperature = 30,
             weatherCondition = "Trời hửng nắng",
             highTemperature = 33,
             lowTemperature = 25,
         ),
         Weather(
-            cityName = "TP Hồ Chí Minh",
+            location = DefaultWeatherLocations.hoChiMinhCity,
             temperature = 27,
             weatherCondition = "Trời mưa",
             highTemperature = 30,
             lowTemperature = 24,
         ),
         Weather(
-            cityName = "Cà Mau",
+            location = DefaultWeatherLocations.caMau,
             temperature = 36,
             weatherCondition = "Trời nắng",
             highTemperature = 38,
             lowTemperature = 33,
         ),
         Weather(
-            cityName = "Thái Nguyên",
+            location = DefaultWeatherLocations.thaiNguyen,
             temperature = 36,
             weatherCondition = "Trời nắng",
             highTemperature = 38,
             lowTemperature = 33,
         ),
         Weather(
-            cityName = "Đà Nẵng",
+            location = DefaultWeatherLocations.daNang,
             temperature = 36,
             weatherCondition = "Trời nắng",
             highTemperature = 38,

@@ -121,7 +121,7 @@ private fun LocationContent(
                 ) {
                     items(
                         items = uiState.locations,
-                        key = { weather -> weather.cityName },
+                        key = { weather -> weather.location.displayName },
                     ) { weather ->
                         LocationCard(
                             weather = weather,
@@ -154,7 +154,7 @@ private fun LocationCard(
             modifier = Modifier,
         ) {
             Text(
-                text = weather.cityName,
+                text = weather.location.displayName,
                 color = MaterialTheme.colorScheme.primary,
             )
 

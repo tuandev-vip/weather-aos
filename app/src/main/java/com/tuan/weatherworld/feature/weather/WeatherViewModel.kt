@@ -2,7 +2,9 @@ package com.tuan.weatherworld.feature.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuan.weatherworld.data.location.DefaultWeatherLocations
 import com.tuan.weatherworld.data.model.Weather
+import com.tuan.weatherworld.data.model.WeatherLocation
 import com.tuan.weatherworld.data.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,16 +28,17 @@ class WeatherViewModel @Inject constructor(
     )
 
     val state: StateFlow<WeatherUiState> = _state.asStateFlow()
+    val defaultLocation  = DefaultWeatherLocations.daNang
 
     init {
-        loadWeather(DEFAULT_CITY)
+        loadWeather(defaultLocation)
     }
 
-    fun loadWeather(cityName: String) {
+    fun loadWeather(location: WeatherLocation) {
         viewModelScope.launch {
             _state.value = WeatherUiState.Loading
 
-            repository.getWeather(cityName)
+            repository.getWeather(location)
                 .onSuccess { weather ->
                     _state.value = WeatherUiState.Success(
                         weather = weather,
@@ -50,7 +53,7 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    private companion object {
-        const val DEFAULT_CITY = "Hải Phòng"
-    }
+
+
+
 }
