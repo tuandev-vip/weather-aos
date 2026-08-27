@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 07 hoàn thành** — Weather và Locations đã lấy current, dự báo 24 giờ và dự báo 10 ngày thật từ Open-Meteo; tìm kiếm địa điểm thật thuộc Commit 08.
+> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành** — app tìm kiếm địa điểm thật bằng Open-Meteo Geocoding, lưu favorites bằng Room, tự tải thời tiết cho danh sách đã lưu và mở Weather theo địa điểm người dùng chọn.
 
 ## Mục tiêu học tập
 
@@ -35,12 +35,14 @@ com.tuan.weatherworld
 - Lifecycle-aware state collection
 - Retrofit + Kotlinx Serialization
 - Open-Meteo Forecast API
+- Open-Meteo Geocoding API
+- Room Database
 - Gradle Kotlin DSL
 - minSdk 26
 - targetSdk 36
 - compileSdk 36.1
 
-Weather World hiện lấy dữ liệu thời tiết từ Open-Meteo qua `WeatherRepositoryImpl`. Tọa độ vẫn lấy từ `DefaultWeatherLocations`; Geocoding, Room và DataStore chưa được thêm ở giai đoạn này.
+Weather World lấy dự báo từ Open-Meteo qua `WeatherRepositoryImpl` và tìm tên địa điểm qua Geocoding API. Favorites được lưu bền vững bằng Room qua `SavedLocationRepository`; `LocationsViewModel` quan sát `Flow` từ Room rồi tải thời tiết cho từng địa điểm đã lưu. DataStore để nhớ địa điểm đang chọn và vị trí thiết bị trong lần cài đầu chưa được triển khai.
 
 ## Chạy project
 
@@ -74,7 +76,8 @@ Project foundation
     → hoàn thiện UI bằng mock data
     → Weather API thật
     → tìm kiếm và thêm địa điểm
-    → DataStore + Room
+    → Room favorites
+    → DataStore + current location
     → testing
 ```
 
@@ -108,8 +111,50 @@ AppNavGraph
                            Weather
 ```
 
+Luồng tìm kiếm, lưu và mở địa điểm hiện tại:
+
+```text
+LocationSearchScreen
+→ LocationSearchViewModel
+→ WeatherRepository.searchLocations()
+→ WeatherRepositoryImpl
+→ WeatherRemoteDataSource
+→ GeocodingApi
+→ OpenMeteoGeocodingResponseDto
+→ toDomain()
+→ List<WeatherLocation>
+→ LocationSearchUiState
+→ Compose hiển thị kết quả
+
+Người dùng chọn một WeatherLocation
+→ LocationSearchViewModel
+→ SavedLocationRepository
+→ SavedLocationRepositoryImpl
+→ WeatherLocation.toEntity()
+→ SavedLocationDao.insert()
+→ Room
+→ Added / AlreadyExists / Error
+→ SavedLocationUiState
+→ Added: AppNavGraph.openWeather(location)
+→ Routes.weather(name, latitude, longitude)
+→ WeatherViewModel đọc argument bằng SavedStateHandle
+→ WeatherRepository tải thời tiết địa điểm vừa chọn
+
+Room.saved_locations
+→ SavedLocationDao.observeAll()
+→ SavedLocationRepository.observeSavedLocations()
+→ LocationsViewModel.collectLatest()
+→ WeatherRepository.getLocationsWeather(locations)
+→ LocationsUiState.Empty / Success / Error
+→ LocationsScreen tự cập nhật danh sách card
+```
+
 `MockWeatherRepository` và `MockWeatherData` vẫn được giữ trong source để học/test, nhưng `RepositoryModule` runtime đã bind `WeatherRepository` sang `WeatherRepositoryImpl`.
 
 Hilt chịu trách nhiệm tạo và nối dependency. Mapper giữ DTO của Open-Meteo ngoài UI và chuyển chúng thành domain model. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
+
+Navigation dùng route chuỗi và key tập trung theo cách tổ chức của SilverCare. `Routes` giữ route mẫu, tên argument và helper tạo route thật; `AppNavGraph` khai báo `navArgument`; `WeatherViewModel` nhận `SavedStateHandle`, đọc tên/kinh độ/vĩ độ rồi gọi Repository. Screen không đọc argument và không giữ `NavController`.
+
+Hiện Splash vẫn mở Đà Nẵng như fallback phát triển. Bước tiếp theo là dùng Preferences DataStore lưu một địa điểm đang chọn, xin quyền vị trí ở lần cài đầu và dùng vị trí thiết bị khi chưa có lựa chọn trước đó. Room tiếp tục chỉ giữ danh sách favorites.
 
 Route `SETTING` và `SettingScreen` hiện mới là khung điều hướng tạo sớm. Phần cài đặt thật vẫn thuộc Commit 10 trong roadmap.

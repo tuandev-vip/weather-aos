@@ -18,6 +18,8 @@ internal val LightWeatherColorScheme = lightColorScheme(
     background = Color(0xFF3A3A46),
     onBackground = Color(0xFF57575D),
     scrim = Color(0xFFBCBCD2),
+    surface = Color(0xFFABABB7),
+    error = Color(0xFFD00808),
 
 )
 
@@ -27,7 +29,8 @@ internal val DarkWeatherColorScheme = darkColorScheme(
     onSecondary = Color(0xFFFFFFFF),
     background = Color(0xFF30303A),
     scrim = Color(0xFFBCBCD2),
-
+    surface = Color(0xFFABABB7),
+    error = Color(0xFFD00808),
 )
 
 /**

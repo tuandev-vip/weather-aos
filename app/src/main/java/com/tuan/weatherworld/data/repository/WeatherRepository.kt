@@ -5,5 +5,7 @@ import com.tuan.weatherworld.data.model.WeatherLocation
 
 interface WeatherRepository {
     suspend fun getWeather(location: WeatherLocation): Result<Weather>
-    suspend fun getLocationsWeather(): Result<List<Weather>>
+    suspend fun getLocationsWeather(locations: List<WeatherLocation>): Result<List<Weather>>
+
+    suspend fun searchLocations(query: String):  Result<List<WeatherLocation>>
 }

@@ -1,5 +1,6 @@
 package com.tuan.weatherworld.di
 
+import com.tuan.weatherworld.data.source.weather.remote.GeocodingApi
 import com.tuan.weatherworld.data.source.weather.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
@@ -15,7 +16,11 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.open-meteo.com/"
+    private const val WEATHER_BASE_URL =
+        "https://api.open-meteo.com/"
+
+    private const val GEOCODING_BASE_URL =
+        "https://geocoding-api.open-meteo.com/"
 
     @Provides
     @Singleton
@@ -30,14 +35,10 @@ object NetworkModule {
     fun provideRetrofit(
         json: Json,
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(
-                json.asConverterFactory(
-                    "application/json".toMediaType(),
-                ),
-            )
-            .build()
+        return createRetrofit(
+            baseUrl = WEATHER_BASE_URL,
+            json = json,
+        )
     }
 
     @Provides
@@ -46,5 +47,33 @@ object NetworkModule {
         retrofit: Retrofit,
     ): WeatherApi {
         return retrofit.create(WeatherApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGeocodingApi(
+        json: Json,
+    ): GeocodingApi {
+        return createRetrofit(
+            baseUrl = GEOCODING_BASE_URL,
+            json = json,
+        ).create(
+            GeocodingApi::class.java,
+        )
+    }
+
+
+    private fun createRetrofit(
+        baseUrl: String,
+        json: Json,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(
+                json.asConverterFactory(
+                    "application/json".toMediaType(),
+                ),
+            )
+            .build()
     }
 }

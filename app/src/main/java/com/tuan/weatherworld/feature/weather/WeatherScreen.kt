@@ -2,6 +2,7 @@ package com.tuan.weatherworld.feature.weather
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -71,7 +72,7 @@ private fun WeatherContent(
 ) {
     val rainyColors = WeatherTheme.conditionColors.rainy
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(
@@ -87,6 +88,7 @@ private fun WeatherContent(
                 horizontal = WeatherTheme.spacing.screenHorizontal,
                 vertical = WeatherTheme.spacing.screenVertical,
             ),
+        contentAlignment = Alignment.Center
     ) {
 
         when (val currentState = state) {
@@ -100,60 +102,65 @@ private fun WeatherContent(
                 Text(
                     text = currentState.message,
                     color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center
                 )
             }
 
             is WeatherUiState.Success -> {
-                WWScaffold(
-                    weather = currentState.weather,
-                    onOpenLocations = onOpenLocations,
-                    onOpenSetting = onOpenSetting,
-                )
-                Spacer(Modifier.size(WeatherTheme.spacing.space32))
+                Column {
+                    WWScaffold(
+                        weather = currentState.weather,
+                        onOpenLocations = onOpenLocations,
+                        onOpenSetting = onOpenSetting,
+                    )
+                    Spacer(Modifier.size(WeatherTheme.spacing.space8))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(WeatherTheme.spacing.space16),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(WeatherTheme.spacing.space16),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                        item {
+                            Spacer(Modifier.size(WeatherTheme.spacing.space32))
 
-                    item {
-                        WeatherDetails(
-                            weather = currentState.weather,
-                            contentColor = MaterialTheme.colorScheme.primary,
-                        )
-                        Spacer(Modifier.size(WeatherTheme.spacing.touchTarget))
-                    }
-
-                    item {
-                        HourlyForecastCard(
-                            hourlyForecasts = currentState.weather.hourlyForecast,
-                        )
-                    }
-                    item {
-                        DailyForecastCard(
-                            dailyForecast = currentState.weather.dailyForecast
-                        )
-                        Spacer(Modifier.size(WeatherTheme.spacing.space40))
-                    }
-                    item {
-                        Text(
-                            text = stringResource(R.string.weather_brand),
-                            style = WeatherTheme.textStyles.sectionTitle,
-
+                            WeatherDetails(
+                                weather = currentState.weather,
+                                contentColor = MaterialTheme.colorScheme.primary,
                             )
-                    }
+                            Spacer(Modifier.size(WeatherTheme.spacing.touchTarget))
+                        }
 
+                        item {
+                            HourlyForecastCard(
+                                hourlyForecasts = currentState.weather.hourlyForecast,
+                            )
+                        }
+                        item {
+                            DailyForecastCard(
+                                dailyForecast = currentState.weather.dailyForecast
+                            )
+                            Spacer(Modifier.size(WeatherTheme.spacing.space40))
+                        }
+                        item {
+                            Text(
+                                text = stringResource(R.string.weather_brand),
+                                style = WeatherTheme.textStyles.sectionTitle,
+
+                                )
+                        }
+
+                    }
                 }
+
+
             }
         }
     }
 }
 
 @Composable
-fun WWScaffold(
+private fun WWScaffold(
     onOpenLocations: () -> Unit,
     onOpenSetting: () -> Unit,
     weather: Weather

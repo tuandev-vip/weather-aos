@@ -1,7 +1,9 @@
 package com.tuan.weatherworld.feature.weather
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuan.weatherworld.core.navigation.Routes
 import com.tuan.weatherworld.data.location.DefaultWeatherLocations
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
@@ -22,17 +24,46 @@ sealed interface WeatherUiState {
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
     private val _state = MutableStateFlow<WeatherUiState>(
         WeatherUiState.Loading,
     )
 
     val state: StateFlow<WeatherUiState> = _state.asStateFlow()
-    val defaultLocation  = DefaultWeatherLocations.daNang
+
+    private val defaultLocation = DefaultWeatherLocations.daNang
+
+    private val locationName: String =
+        savedStateHandle
+            .get<String>(Routes.ARG_LOCATION_NAME)
+            ?.takeIf { it.isNotBlank() }
+            ?: defaultLocation.displayName
+
+    private val latitude: Double =
+        savedStateHandle
+            .get<String>(Routes.ARG_LOCATION_LATITUDE)
+            ?.toDoubleOrNull()
+            ?: defaultLocation.latitude
+
+    private val longitude: Double =
+        savedStateHandle
+            .get<String>(Routes.ARG_LOCATION_LONGITUDE)
+            ?.toDoubleOrNull()
+            ?: defaultLocation.longitude
+
+    private val location = WeatherLocation(
+        displayName = locationName,
+        latitude = latitude,
+        longitude = longitude,
+    )
 
     init {
-        loadWeather(defaultLocation)
+        loadWeather(location)
     }
+
+
 
     fun loadWeather(location: WeatherLocation) {
         viewModelScope.launch {
@@ -52,8 +83,6 @@ class WeatherViewModel @Inject constructor(
                 }
         }
     }
-
-
 
 
 }

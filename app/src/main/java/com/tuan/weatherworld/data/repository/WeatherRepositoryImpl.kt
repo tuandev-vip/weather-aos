@@ -4,13 +4,14 @@ import com.tuan.weatherworld.data.location.DefaultWeatherLocations
 import com.tuan.weatherworld.data.mapper.toDomain
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
+import com.tuan.weatherworld.data.repository.mock.MockWeatherData.locations
 import com.tuan.weatherworld.data.source.weather.WeatherRemoteDataSource
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class WeatherRepositoryImpl @Inject constructor(
@@ -33,11 +34,10 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getLocationsWeather(): Result<List<Weather>> {
+    override suspend fun getLocationsWeather(locations: List<WeatherLocation>): Result<List<Weather>> {
         return try {
             val weatherList = coroutineScope {
-                DefaultWeatherLocations.all
-                    .map { location ->
+                        locations.map { location ->
                         async {
                             fetchWeather(
                                 location = location,
@@ -54,6 +54,31 @@ class WeatherRepositoryImpl @Inject constructor(
             Result.failure(exception)
         }
     }
+
+    override suspend fun searchLocations(
+        query: String,
+    ): Result<List<WeatherLocation>> {
+        val normalizedQuery = query.trim()
+
+        if (normalizedQuery.length < 2) {
+            return Result.success(emptyList())
+        }
+
+        return try {
+            val responseDto = remoteDataSource.searchLocations(
+                query = normalizedQuery,
+            )
+
+            val locations = responseDto.toDomain()
+
+            Result.success(locations)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
+
 
     private suspend fun fetchWeather(
         location: WeatherLocation,

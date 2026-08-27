@@ -19,6 +19,16 @@
     <!-- location -->
     <string name="locations_title">Địa điểm yêu thích</string>
     <string name="locations_add">Thêm địa điểm</string>
+    <string name="locations_empty">Tìm kiếm địa điểm bạn yêu thích để xem thời tiết chính xác</string>
+
+
+    <!-- location search -->
+    <string name="locations_search_title">Tìm kiếm địa điểm yêu thích</string>
+    <string name="locations_search_buton_back_title">Hủy</string>
+    <string name="locations_search_hint">Nhập địa điểm bạn muốn tìm kiếm</string>
+    <string name="locations_search_empty_idle">Tìm kiếm các địa điểm bạn yêu thích\nđể xem thời tiết hiện tại</string>
+    <string name="locations_search_no_result">Không tìm thấy địa điểm nào </string>
+    <string name="locations_search_already_exists">Địa điểm này đã có trong danh sách </string>
     <!-- Brand -->
     <string name="weather_brand">DEV BaVi</string>
 </resources>

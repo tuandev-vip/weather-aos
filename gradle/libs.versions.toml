@@ -15,6 +15,7 @@ ksp = "2.3.10"
 hiltNavigationCompose = "1.2.0"
 retrofit = "3.0.0"
 kotlinxSerializationJson = "1.9.0"
+room = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,15 +40,21 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+
 # Retrofit core
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-
 # Retrofit Kotlinx Serialization converter
 retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-
 # Kotlinx Serialization JSON
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
+
+# Room database runtime
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+# Room support for Kotlin Coroutines and Flow
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+# Room code generator used by KSP
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
