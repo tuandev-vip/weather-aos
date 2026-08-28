@@ -1,10 +1,11 @@
 package com.tuan.weatherworld.data.repository.mock
 
+import com.tuan.weatherworld.core.common.AppResult
+import com.tuan.weatherworld.core.error.AppError
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
 import com.tuan.weatherworld.data.repository.WeatherRepository
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Test double chạy hoàn toàn trong bộ nhớ cho [WeatherRepository].
@@ -13,7 +14,7 @@ import kotlin.coroutines.cancellation.CancellationException
  * bind với [com.tuan.weatherworld.data.repository.WeatherRepositoryImpl].
  */
 class MockWeatherRepository @Inject constructor() : WeatherRepository {
-    override suspend fun getWeather(location: WeatherLocation): Result<Weather> {
+    override suspend fun getWeather(location: WeatherLocation): AppResult<Weather> {
         val weather = MockWeatherData.locations.firstOrNull { item ->
             item.location.displayName.trim().equals(
                 location.displayName.trim(),
@@ -22,46 +23,55 @@ class MockWeatherRepository @Inject constructor() : WeatherRepository {
         }
 
         return if (weather != null) {
-            Result.success(
-                weather.copy(
+            AppResult.Success(
+                data = weather.copy(
                     hourlyForecast = MockWeatherData.createHourlyForecast(),
                     dailyForecast = MockWeatherData.createDailyForecast(),
                 ),
             )
         } else {
-            Result.failure(
-                NoSuchElementException(
-                    "Không tìm thấy thời tiết của ${location.displayName}",
-                ),
+            val throwable = NoSuchElementException(
+                "Không tìm thấy thời tiết của ${location.displayName}",
+            )
+
+            AppResult.Error(
+                error = AppError.Unknown,
+                throwable = throwable
             )
         }
     }
 
     override suspend fun getLocationsWeather(
         locations: List<WeatherLocation>,
-    ): Result<List<Weather>> {
+    ): AppResult<List<Weather>> {
         val weatherList = mutableListOf<Weather>()
 
         for (location in locations) {
-            val weather = getWeather(
-                location = location,
-            ).getOrElse { throwable ->
-                return Result.failure(throwable)
-            }
+            when (val result = getWeather(location)) {
+                is AppResult.Success -> {
+                    weatherList += result.data
+                }
 
-            weatherList += weather
+                is AppResult.Error -> {
+                    return result
+                }
+            }
         }
 
-        return Result.success(weatherList)
+        return AppResult.Success(
+            data = weatherList,
+        )
     }
 
     override suspend fun searchLocations(
         query: String,
-    ): Result<List<WeatherLocation>> {
+    ): AppResult<List<WeatherLocation>> {
         val normalizedQuery = query.trim()
 
         if (normalizedQuery.length < 2) {
-            return Result.success(emptyList())
+            return AppResult.Success(
+                data = emptyList(),
+            )
         }
 
         val locations = MockWeatherData.locations
@@ -73,6 +83,8 @@ class MockWeatherRepository @Inject constructor() : WeatherRepository {
                 )
             }
 
-        return Result.success(locations)
+        return AppResult.Success(
+            data = locations,
+        )
     }
 }

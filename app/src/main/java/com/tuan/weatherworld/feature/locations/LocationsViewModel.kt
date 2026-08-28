@@ -2,6 +2,10 @@ package com.tuan.weatherworld.feature.locations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuan.weatherworld.core.common.AppResult
+import com.tuan.weatherworld.core.error.AppError
+import com.tuan.weatherworld.core.ui.UiText
+import com.tuan.weatherworld.core.ui.toUiText
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
 import com.tuan.weatherworld.data.repository.SavedLocationRepository
@@ -22,7 +26,7 @@ sealed interface LocationsUiState {
 
     data object Empty : LocationsUiState
     data class Success(val locations: List<Weather>) : LocationsUiState
-    data class Error(val message: String) : LocationsUiState
+    data class Error(val message: UiText) : LocationsUiState
 }
 
 /**
@@ -51,9 +55,9 @@ class LocationsViewModel @Inject constructor(
     private fun observeSavedLocations() {
         viewModelScope.launch {
             savedLocationRepository.observeSavedLocations()
-                .catch { throwable ->
+                .catch {
                     _state.value = LocationsUiState.Error(
-                        message = throwable.message ?: "Không thể đọc danh sách địa điểm",
+                        message = AppError.StorageFailure.toUiText()
                     )
                 }
                 .collectLatest { locations ->
@@ -69,19 +73,16 @@ class LocationsViewModel @Inject constructor(
     private suspend fun loadLocations(locations: List<WeatherLocation>) {
             _state.value = LocationsUiState.Loading
 
-            weatherRepository.getLocationsWeather(locations = locations)
-                .onSuccess { weatherList ->
-                    _state.value = LocationsUiState.Success(
-                        locations = weatherList,
-                    )
-
-                }
-                .onFailure { throwable ->
-                    _state.value = LocationsUiState.Error(
-                        message = throwable.message
-                            ?: "Không thể tải danh sách thành phố",
-                    )
-                }
+        when ( val result = weatherRepository.getLocationsWeather(locations)){
+            is AppResult.Success -> {
+                _state.value = LocationsUiState.Success(result.data)
+            }
+            is AppResult.Error -> {
+                _state.value = LocationsUiState.Error(
+                    message = result.error.toUiText()
+                )
+            }
+        }
     }
 
     // ---------- Chọn địa điểm mặc định ----------
@@ -94,9 +95,9 @@ class LocationsViewModel @Inject constructor(
                 .onSuccess {
                     onSelected(location)
                 }
-                .onFailure { throwable ->
+                .onFailure {
                     _state.value = LocationsUiState.Error(
-                        message = throwable.message  ?: "Không thể lưu địa điểm đang chọn",
+                        message = AppError.StorageFailure.toUiText(),
                     )
                 }
         }

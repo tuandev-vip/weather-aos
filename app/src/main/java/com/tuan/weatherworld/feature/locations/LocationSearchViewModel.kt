@@ -2,6 +2,10 @@ package com.tuan.weatherworld.feature.locations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuan.weatherworld.core.common.AppResult
+import com.tuan.weatherworld.core.error.AppError
+import com.tuan.weatherworld.core.ui.UiText
+import com.tuan.weatherworld.core.ui.toUiText
 import com.tuan.weatherworld.data.model.WeatherLocation
 import com.tuan.weatherworld.data.repository.SaveLocationResult
 import com.tuan.weatherworld.data.repository.SavedLocationRepository
@@ -27,7 +31,7 @@ sealed interface LocationSearchUiState {
 
     data class Success(val locations: List<WeatherLocation>) : LocationSearchUiState
 
-    data class Error(val message: String) : LocationSearchUiState
+    data class Error(val message: UiText) : LocationSearchUiState
 
     data object NoResults : LocationSearchUiState
 }
@@ -42,7 +46,7 @@ sealed class SavedLocationUiState {
     data object Adding : SavedLocationUiState()
     data object AlreadyExists : SavedLocationUiState()
     data class Added(val location: WeatherLocation) : SavedLocationUiState()
-    data class Error(val message: String) : SavedLocationUiState()
+    data class Error(val message: UiText) : SavedLocationUiState()
 }
 
 /**
@@ -101,23 +105,22 @@ class LocationSearchViewModel @Inject constructor(
 
         _state.value = LocationSearchUiState.Loading
 
-        weatherRepository.searchLocations(query = query)
-            .onSuccess { locations ->
+        when ( val result = weatherRepository.searchLocations(query)){
+            is AppResult.Success -> {
                 _state.value =
-                    if (locations.isEmpty()) {
-                        LocationSearchUiState.NoResults
-                    } else {
-                        LocationSearchUiState.Success(
-                            locations = locations
-                        )
+                    if (result.data.isEmpty()){
+                    LocationSearchUiState.NoResults
+                }else {
+                        LocationSearchUiState.Success(result.data)
                     }
             }
-            .onFailure { throwable ->
-                _state.value =
-                    LocationSearchUiState.Error(
-                        message = throwable.message ?: "Không thể tìm địa điểm",
-                    )
+
+            is AppResult.Error -> {
+                _state.value = LocationSearchUiState.Error(
+                    message = result.error.toUiText()
+                )
             }
+        }
     }
 
     // ---------- Luồng Room -> DataStore -> điều hướng ----------
@@ -144,7 +147,7 @@ class LocationSearchViewModel @Inject constructor(
             }
             .onFailure { throwable ->
                 _savedLocationState.value = SavedLocationUiState.Error(
-                    message = throwable.message ?: "Không thể thêm địa chỉ yêu thích"
+                    message = AppError.StorageFailure.toUiText()
                 )
             }
     }
@@ -164,8 +167,7 @@ class LocationSearchViewModel @Inject constructor(
             }
             .onFailure { throwable ->
                 _savedLocationState.value = SavedLocationUiState.Error(
-                    message = throwable.message
-                        ?: "Không thể lưu địa điểm đang chọn",
+                    message = AppError.StorageFailure.toUiText()
                 )
             }
     }

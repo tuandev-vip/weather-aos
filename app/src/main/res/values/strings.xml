@@ -31,4 +31,15 @@
 
     <!-- Nhận diện thương hiệu -->
     <string name="weather_brand">DEVBAVI</string>
+
+    <!-- Thông báo lỗi dùng chung -->
+    <string name="error_no_internet">Không có kết nối mạng. Vui lòng kiểm tra Internet và thử lại.</string>
+    <string name="error_request_timeout">Máy chủ phản hồi quá lâu. Vui lòng thử lại.</string>
+    <string name="error_server_unavailable">Dịch vụ thời tiết đang tạm gián đoạn. Vui lòng thử lại sau.</string>
+    <string name="error_too_many_requests">Bạn đang gửi quá nhiều yêu cầu. Vui lòng chờ một lúc rồi thử lại.</string>
+    <string name="error_invalid_response">Dữ liệu thời tiết nhận được không hợp lệ.</string>
+    <string name="error_location_permission_denied">Ứng dụng chưa được cấp quyền truy cập vị trí.</string>
+    <string name="error_location_unavailable">Không thể xác định vị trí hiện tại của thiết bị.</string>
+    <string name="error_storage_failure">Không thể đọc hoặc lưu dữ liệu trên thiết bị.</string>
+    <string name="error_unknown">Đã xảy ra lỗi. Vui lòng thử lại.</string>
 </resources>

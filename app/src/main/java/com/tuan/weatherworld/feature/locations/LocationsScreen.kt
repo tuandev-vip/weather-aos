@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tuan.weatherworld.R
 import com.tuan.weatherworld.core.design.WeatherTheme
+import com.tuan.weatherworld.core.ui.asString
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
 
@@ -128,7 +129,7 @@ private fun LocationContent(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = uiState.message,
+                        text = uiState.message.asString(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary,
                     )

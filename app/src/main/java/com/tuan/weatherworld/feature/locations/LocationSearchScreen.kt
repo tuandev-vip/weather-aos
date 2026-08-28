@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tuan.weatherworld.R
 import com.tuan.weatherworld.core.design.WWScreenScaffold
 import com.tuan.weatherworld.core.design.WeatherTheme
+import com.tuan.weatherworld.core.ui.asString
 import com.tuan.weatherworld.data.model.WeatherLocation
 
 /**
@@ -61,8 +62,13 @@ fun LocationSearchScreen(
     val alreadyExistsMessage = stringResource(
         R.string.locations_search_already_exists,
     )
-    val isAdding =
-        savedLocationUiState is SavedLocationUiState.Adding
+    val isAdding = savedLocationUiState is SavedLocationUiState.Adding
+    val savedLocationErrorMessage =
+        when (val currentState = savedLocationUiState) {
+            is SavedLocationUiState.Error -> currentState.message.asString()
+            else -> null
+        }
+
 
     LaunchedEffect(savedLocationUiState) {
         when (val currentState = savedLocationUiState) {
@@ -79,7 +85,7 @@ fun LocationSearchScreen(
 
             is SavedLocationUiState.Error -> {
                 snackbarHostState.showSnackbar(
-                    message = currentState.message
+                    message = savedLocationErrorMessage.orEmpty()
                 )
                 viewModel.onSavedLocationResultHandled()
             }
@@ -200,7 +206,7 @@ private fun LocationSearchContent(
 
                 is LocationSearchUiState.Error -> {
                     Text(
-                        text = uiState.message,
+                        text = uiState.message.asString(),
                         style = WeatherTheme.textStyles.body,
                         color = MaterialTheme.colorScheme.error
                     )

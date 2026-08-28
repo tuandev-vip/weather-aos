@@ -1,6 +1,8 @@
 package com.tuan.weatherworld.data.repository
 
+import com.tuan.weatherworld.core.common.AppResult
 import com.tuan.weatherworld.data.location.DefaultWeatherLocations
+import com.tuan.weatherworld.data.mapper.NetworkErrorMapper
 import com.tuan.weatherworld.data.mapper.toDomain
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
@@ -27,21 +29,24 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun getWeather(
         location: WeatherLocation,
-    ): Result<Weather> {
+    ): AppResult<Weather> {
         return try {
             val weather = fetchWeather(
                 location = location,
             )
 
-            Result.success(weather)
+            AppResult.Success(data = weather)
         } catch (exception: CancellationException) {
             throw exception
         } catch (exception: Exception) {
-            Result.failure(exception)
+            AppResult.Error(
+                error = NetworkErrorMapper.from(exception),
+                throwable = exception
+            )
         }
     }
 
-    override suspend fun getLocationsWeather(locations: List<WeatherLocation>): Result<List<Weather>> {
+    override suspend fun getLocationsWeather(locations: List<WeatherLocation>): AppResult<List<Weather>> {
         return try {
             val weatherList = coroutineScope {
                         locations.map { location ->
@@ -54,21 +59,24 @@ class WeatherRepositoryImpl @Inject constructor(
                     .awaitAll()
             }
 
-            Result.success(weatherList)
+            AppResult.Success(weatherList)
         } catch (exception: CancellationException) {
             throw exception
         } catch (exception: Exception) {
-            Result.failure(exception)
+            AppResult.Error(
+                error = NetworkErrorMapper.from(exception),
+                throwable = exception
+            )
         }
     }
 
     override suspend fun searchLocations(
         query: String,
-    ): Result<List<WeatherLocation>> {
+    ): AppResult<List<WeatherLocation>> {
         val normalizedQuery = query.trim()
 
         if (normalizedQuery.length < 2) {
-            return Result.success(emptyList())
+            return AppResult.Success(emptyList())
         }
 
         return try {
@@ -78,11 +86,14 @@ class WeatherRepositoryImpl @Inject constructor(
 
             val locations = responseDto.toDomain()
 
-            Result.success(locations)
+            AppResult.Success(locations)
         } catch (exception: CancellationException) {
             throw exception
         } catch (exception: Exception) {
-            Result.failure(exception)
+            AppResult.Error(
+                error = NetworkErrorMapper.from(exception),
+                throwable = exception
+            )
         }
     }
 

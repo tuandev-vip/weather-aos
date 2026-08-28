@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tuan.weatherworld.R
 import com.tuan.weatherworld.core.design.WeatherTheme
+import com.tuan.weatherworld.core.ui.asString
 import com.tuan.weatherworld.data.model.DailyForecast
 import com.tuan.weatherworld.data.model.HourlyForecast
 import com.tuan.weatherworld.data.model.Weather
@@ -106,7 +107,7 @@ private fun WeatherContent(
 
             is WeatherUiState.Error -> {
                 Text(
-                    text = currentState.message,
+                    text = currentState.message.asString(),
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
                 )

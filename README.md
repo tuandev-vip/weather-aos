@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành; Commit 10 đang triển khai** — app đã lưu selected location bằng DataStore, lấy GPS, nối reverse geocoding và chuyển sang tìm kiếm thủ công khi người dùng từ chối quyền hoặc không lấy được vị trí; phần tên tỉnh/thành phố đang chờ kiểm thử trên thiết bị thật.
+> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành; Commit 10 đang triển khai** — app đã lưu selected location bằng DataStore, lấy GPS, nối reverse geocoding, chuyển sang tìm kiếm thủ công khi không lấy được vị trí và đã có error model thống nhất cho luồng Weather API.
 
 ## Mục tiêu học tập
 
@@ -40,6 +40,7 @@ com.tuan.weatherworld
 - Preferences DataStore
 - Google Play services Location
 - Android Geocoder cho reverse geocoding
+- `AppResult` + `AppError` + `UiText` cho xử lý lỗi thống nhất
 - Foreground location permission (`COARSE`/`FINE`)
 - Gradle Kotlin DSL
 - minSdk 26
@@ -85,7 +86,7 @@ Project foundation
     → testing
 ```
 
-Kế hoạch triển khai chính thức theo từng commit nằm trong [`ROADMAP.md`](ROADMAP.md). Nội dung học mở rộng nằm trong [`LEARNING_PLAN.md`](LEARNING_PLAN.md).
+Roadmap chi tiết và ghi chú học tập được giữ cục bộ, không đưa lên repository công khai. README này chỉ trình bày kiến trúc, tính năng và cách chạy cần thiết cho người xem project.
 
 ## Nguyên tắc kiến trúc
 
@@ -189,6 +190,19 @@ System Splash
 ```
 
 `MockWeatherRepository` và `MockWeatherData` vẫn được giữ trong source để học/test, nhưng `RepositoryModule` runtime đã bind `WeatherRepository` sang `WeatherRepositoryImpl`.
+
+Luồng lỗi của Weather API:
+
+```text
+Retrofit / HTTP / Kotlinx Serialization phát sinh exception
+→ NetworkErrorMapper phân loại lỗi kỹ thuật
+→ AppError (NoInternet, RequestTimeout, ServerUnavailable...)
+→ AppResult.Error
+→ ViewModel đổi AppError thành UiText
+→ Compose Screen gọi asString() và hiển thị resource trong strings.xml
+```
+
+`Throwable` gốc vẫn được giữ trong `AppResult.Error` để log/debug, nhưng không được đưa trực tiếp lên UI. Các thao tác Room và DataStore hiện được quy về `StorageFailure`; mapper lỗi local chi tiết hơn sẽ được bổ sung ở checkpoint testing.
 
 Hilt chịu trách nhiệm tạo và nối dependency. Mapper giữ DTO của Open-Meteo ngoài UI và chuyển chúng thành domain model. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
 

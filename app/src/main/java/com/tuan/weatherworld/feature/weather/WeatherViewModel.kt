@@ -3,7 +3,10 @@ package com.tuan.weatherworld.feature.weather
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuan.weatherworld.core.common.AppResult
 import com.tuan.weatherworld.core.navigation.Routes
+import com.tuan.weatherworld.core.ui.UiText
+import com.tuan.weatherworld.core.ui.toUiText
 import com.tuan.weatherworld.data.location.DefaultWeatherLocations
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
@@ -19,7 +22,7 @@ import javax.inject.Inject
 sealed interface WeatherUiState {
     data object Loading : WeatherUiState
     data class Success(val weather: Weather) : WeatherUiState
-    data class Error(val message: String) : WeatherUiState
+    data class Error(val message: UiText) : WeatherUiState
 }
 
 /**
@@ -44,23 +47,17 @@ class WeatherViewModel @Inject constructor(
     // ---------- Đọc navigation arguments ----------
     private val defaultLocation = DefaultWeatherLocations.daNang
 
-    private val locationName: String =
-        savedStateHandle
-            .get<String>(Routes.ARG_LOCATION_NAME)
-            ?.takeIf { it.isNotBlank() }
-            ?: defaultLocation.displayName
+    private val locationName: String = savedStateHandle.get<String>(Routes.ARG_LOCATION_NAME)
+        ?.takeIf { it.isNotBlank() }
+        ?: defaultLocation.displayName
 
-    private val latitude: Double =
-        savedStateHandle
-            .get<String>(Routes.ARG_LOCATION_LATITUDE)
-            ?.toDoubleOrNull()
-            ?: defaultLocation.latitude
+    private val latitude: Double = savedStateHandle.get<String>(Routes.ARG_LOCATION_LATITUDE)
+        ?.toDoubleOrNull()
+        ?: defaultLocation.latitude
 
-    private val longitude: Double =
-        savedStateHandle
-            .get<String>(Routes.ARG_LOCATION_LONGITUDE)
-            ?.toDoubleOrNull()
-            ?: defaultLocation.longitude
+    private val longitude: Double = savedStateHandle.get<String>(Routes.ARG_LOCATION_LONGITUDE)
+        ?.toDoubleOrNull()
+        ?: defaultLocation.longitude
 
     private val location = WeatherLocation(
         displayName = locationName,
@@ -77,18 +74,19 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = WeatherUiState.Loading
 
-            repository.getWeather(location)
-                .onSuccess { weather ->
-                    _state.value = WeatherUiState.Success(
-                        weather = weather,
-                    )
+            when (
+                val result = repository.getWeather(location)
+            ) {
+                is AppResult.Success -> {
+                _state.value = WeatherUiState.Success(result.data)
                 }
-                .onFailure { throwable ->
+
+                is AppResult.Error -> {
                     _state.value = WeatherUiState.Error(
-                        message = throwable.message
-                            ?: "Không thể tải dữ liệu thời tiết",
+                        message = result.error.toUiText()
                     )
                 }
+            }
         }
     }
 

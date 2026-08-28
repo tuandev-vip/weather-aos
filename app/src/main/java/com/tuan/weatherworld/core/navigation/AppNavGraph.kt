@@ -94,18 +94,11 @@ fun AppNavGraph(
             ),
         ) { backStackEntry ->
             val isLocationRequired =
-                backStackEntry.arguments
-                    ?.getBoolean(Routes.ARG_LOCATION_REQUIRED)
-                    ?: false
+                backStackEntry.arguments?.getBoolean(Routes.ARG_LOCATION_REQUIRED) ?: false
 
             LocationSearchScreen(
-                onBack = if (isLocationRequired) {
-                    null
-                } else {
-                    {
-                        navController.popBackStack()
-                    }
-                },
+                onBack = if (isLocationRequired) { null }
+                else { { navController.popBackStack() } },
                 onLocationAdded = navController::openWeather,
             )
         }
