@@ -6,10 +6,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 /**
- * General app colors used by Material 3 components.
+ * Các màu dùng chung cho component Material 3 trong toàn ứng dụng.
  *
- * Feature UI should read these roles from MaterialTheme instead of declaring
- * one-off color values inside screens or components.
+ * UI của từng feature nên đọc các vai trò màu từ MaterialTheme, không khai báo
+ * những màu rời rạc ngay trong Screen hoặc component.
  */
 internal val LightWeatherColorScheme = lightColorScheme(
     primary = Color(0xFFDCD7D7),
@@ -27,17 +27,18 @@ internal val DarkWeatherColorScheme = darkColorScheme(
     primary = Color(0xFFDCD7D7),
     secondary = Color(0xFF006879),
     onSecondary = Color(0xFFFFFFFF),
-    background = Color(0xFF30303A),
+    background = Color(0xFF3A3A46),
+    onBackground = Color(0xFF57575D),
     scrim = Color(0xFFBCBCD2),
     surface = Color(0xFFABABB7),
     error = Color(0xFFD00808),
 )
 
 /**
- * Colors for a weather-condition card or illustration.
+ * Bảng màu ngữ nghĩa cho card hoặc hình minh họa của một trạng thái thời tiết.
  *
- * The two background colors form a gradient, [accent] highlights the weather
- * icon or key value, and [content] is used for text and icons on the gradient.
+ * Hai màu nền tạo gradient, [accent] nhấn mạnh icon/giá trị chính và [content]
+ * được dùng cho chữ, icon nằm trên gradient.
  */
 @Immutable
 data class WeatherConditionPalette(
@@ -47,7 +48,7 @@ data class WeatherConditionPalette(
     val content: Color,
 )
 
-/** Weather-specific semantic roles that do not belong to Material ColorScheme. */
+/** Các vai trò màu riêng của thời tiết không có sẵn trong Material ColorScheme. */
 @Immutable
 data class WeatherConditionColors(
     val sunny: WeatherConditionPalette,

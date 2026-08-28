@@ -2,7 +2,7 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành** — app tìm kiếm địa điểm thật bằng Open-Meteo Geocoding, lưu favorites bằng Room, tự tải thời tiết cho danh sách đã lưu và mở Weather theo địa điểm người dùng chọn.
+> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành; Commit 10 đang triển khai** — app đã lưu selected location bằng DataStore, lấy GPS, nối reverse geocoding và chuyển sang tìm kiếm thủ công khi người dùng từ chối quyền hoặc không lấy được vị trí; phần tên tỉnh/thành phố đang chờ kiểm thử trên thiết bị thật.
 
 ## Mục tiêu học tập
 
@@ -37,12 +37,16 @@ com.tuan.weatherworld
 - Open-Meteo Forecast API
 - Open-Meteo Geocoding API
 - Room Database
+- Preferences DataStore
+- Google Play services Location
+- Android Geocoder cho reverse geocoding
+- Foreground location permission (`COARSE`/`FINE`)
 - Gradle Kotlin DSL
 - minSdk 26
 - targetSdk 36
 - compileSdk 36.1
 
-Weather World lấy dự báo từ Open-Meteo qua `WeatherRepositoryImpl` và tìm tên địa điểm qua Geocoding API. Favorites được lưu bền vững bằng Room qua `SavedLocationRepository`; `LocationsViewModel` quan sát `Flow` từ Room rồi tải thời tiết cho từng địa điểm đã lưu. DataStore để nhớ địa điểm đang chọn và vị trí thiết bị trong lần cài đầu chưa được triển khai.
+Weather World lấy dự báo từ Open-Meteo qua `WeatherRepositoryImpl` và tìm địa điểm theo chữ nhập qua Geocoding API. Favorites được lưu bền vững bằng Room qua `SavedLocationRepository`; `LocationsViewModel` quan sát `Flow` từ Room rồi tải thời tiết cho từng địa điểm đã lưu. `SelectedLocationRepository` dùng Preferences DataStore để nhớ đúng một địa điểm mặc định. Khi chưa có địa điểm đã lưu, Compose Splash xin quyền foreground location, `FusedDeviceLocationProvider` lấy tọa độ và `AndroidLocationNameResolver` dùng Android Geocoder để đổi tọa độ thành tên tỉnh/thành phố.
 
 ## Chạy project
 
@@ -134,8 +138,10 @@ Người dùng chọn một WeatherLocation
 → SavedLocationDao.insert()
 → Room
 → Added / AlreadyExists / Error
-→ SavedLocationUiState
-→ Added: AppNavGraph.openWeather(location)
+→ Added hoặc AlreadyExists: SelectedLocationRepository.saveSelectedLocation(location)
+→ Preferences DataStore lưu location mặc định
+→ SavedLocationUiState.Added(location)
+→ AppNavGraph.openWeather(location)
 → Routes.weather(name, latitude, longitude)
 → WeatherViewModel đọc argument bằng SavedStateHandle
 → WeatherRepository tải thời tiết địa điểm vừa chọn
@@ -149,12 +155,47 @@ Room.saved_locations
 → LocationsScreen tự cập nhật danh sách card
 ```
 
+Luồng khởi động và vị trí hiện tại đang triển khai trong Commit 10:
+
+```text
+System Splash
+→ Compose Splash
+→ SelectedLocationRepository đọc DataStore
+    ├── Có selected location → mở Weather ngay
+    └── Chưa có → kiểm tra/xin COARSE + FINE permission
+          ├── Từ chối/GPS lỗi
+          │       ↓
+          │  LocationSearch bắt buộc
+          │       ↓
+          │  chọn location → Room + DataStore → Weather
+          │
+          └── Được cấp quyền
+                     ↓
+              DeviceLocationProvider
+                     ↓
+          FusedDeviceLocationProvider
+                     ↓
+               latitude/longitude
+                     ↓
+              LocationNameResolver
+                     ↓
+          AndroidLocationNameResolver
+                     ↓
+             tên tỉnh/thành phố
+                     ↓
+        lưu Room + lưu Preferences DataStore
+                     ↓
+             mở WeatherScreen
+```
+
 `MockWeatherRepository` và `MockWeatherData` vẫn được giữ trong source để học/test, nhưng `RepositoryModule` runtime đã bind `WeatherRepository` sang `WeatherRepositoryImpl`.
 
 Hilt chịu trách nhiệm tạo và nối dependency. Mapper giữ DTO của Open-Meteo ngoài UI và chuyển chúng thành domain model. Mỗi ViewModel quản lý `UiState` gồm Loading, Success và Error; Compose thu thập state theo lifecycle rồi tự cập nhật UI.
 
 Navigation dùng route chuỗi và key tập trung theo cách tổ chức của SilverCare. `Routes` giữ route mẫu, tên argument và helper tạo route thật; `AppNavGraph` khai báo `navArgument`; `WeatherViewModel` nhận `SavedStateHandle`, đọc tên/kinh độ/vĩ độ rồi gọi Repository. Screen không đọc argument và không giữ `NavController`.
 
-Hiện Splash vẫn mở Đà Nẵng như fallback phát triển. Bước tiếp theo là dùng Preferences DataStore lưu một địa điểm đang chọn, xin quyền vị trí ở lần cài đầu và dùng vị trí thiết bị khi chưa có lựa chọn trước đó. Room tiếp tục chỉ giữ danh sách favorites.
+Reverse geocoding đã được tách thành contract `LocationNameResolver` và implementation `AndroidLocationNameResolver`, được Hilt bind trong `DataSourceModule` rồi truyền vào `SplashViewModel`. Nếu Geocoder không tìm được tên, app vẫn có thể dùng tọa độ để tải dự báo và dùng tên dự phòng `Vị trí hiện tại`. Phần này đang chờ test trên thiết bị thật. Nếu người dùng từ chối quyền hoặc lấy GPS lỗi, `AppNavGraph` mở `LocationSearchScreen` ở chế độ bắt buộc, xóa Splash khỏi back stack và chỉ mở Weather sau khi người dùng chọn một địa điểm đã được lưu vào Room + DataStore.
+
+Source Kotlin có KDoc tiếng Việt giải thích trách nhiệm và ranh giới giữa Screen, ViewModel, repository, data source, SDK, DTO, Room/DataStore và Hilt. `Routes`, `AppNavGraph` và `strings.xml` còn được chia thành section theo chức năng để dễ quét file. Comment tập trung vào quyết định không thể hiểu đầy đủ chỉ từ tên code, không diễn giải lại từng câu lệnh Compose.
 
 Route `SETTING` và `SettingScreen` hiện mới là khung điều hướng tạo sớm. Phần cài đặt thật vẫn thuộc Commit 10 trong roadmap.

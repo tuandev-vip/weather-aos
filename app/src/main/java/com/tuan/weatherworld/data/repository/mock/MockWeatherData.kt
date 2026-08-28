@@ -8,6 +8,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
+/**
+ * Dữ liệu giả giúp phát triển và xem UI trước khi kết nối Open-Meteo.
+ *
+ * Object này không phải nguồn dữ liệu production và không được dùng để lưu lựa
+ * chọn của người dùng. Các hàm dự báo sinh mốc giờ/ngày tương đối với thời điểm gọi.
+ */
 object MockWeatherData {
     val locations: List<Weather> = listOf(
         Weather(

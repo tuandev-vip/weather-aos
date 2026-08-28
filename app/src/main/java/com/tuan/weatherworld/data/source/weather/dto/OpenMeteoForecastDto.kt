@@ -3,6 +3,13 @@ package com.tuan.weatherworld.data.source.weather.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Cấu trúc JSON của endpoint Open-Meteo `/v1/forecast`.
+ *
+ * Đây là model truyền dữ liệu ở tầng network, không phải model dành cho UI.
+ * `@Serializable` cho phép Kotlinx Serialization sinh serializer khi biên dịch;
+ * `@SerialName` nối tên trường JSON kiểu snake_case với tên Kotlin dễ đọc.
+ */
 @Serializable
 data class OpenMeteoForecastDto(
     val current: OpenMeteoCurrentDto,

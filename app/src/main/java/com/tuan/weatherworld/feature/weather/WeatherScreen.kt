@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +47,11 @@ import com.tuan.weatherworld.data.model.Weather
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * Entry point của màn thời tiết: lấy [WeatherViewModel], collect UiState theo
+ * lifecycle và chuyển callback điều hướng xuống UI. Screen không gọi Retrofit
+ * hoặc đọc navigation argument trực tiếp.
+ */
 @Composable
 fun WeatherScreen(
     onOpenLocations: () -> Unit,
@@ -146,7 +152,8 @@ private fun WeatherContent(
                             Text(
                                 text = stringResource(R.string.weather_brand),
                                 style = WeatherTheme.textStyles.sectionTitle,
-
+                                color = MaterialTheme.colorScheme.surface,
+                                fontStyle = FontStyle.Italic,
                                 )
                         }
 
@@ -206,6 +213,7 @@ private fun WWScaffold(
     }
 }
 
+/** Card dự báo 10 ngày; item đầu tiên được trình bày là “Hôm nay”. */
 @Composable
 fun DailyForecastCard(
     dailyForecast: List<DailyForecast>,
@@ -256,6 +264,7 @@ fun DailyForecastCard(
     }
 }
 
+/** Một hàng dự báo ngày gồm nhãn ngày, xác suất mưa và khoảng nhiệt độ. */
 @Composable
 fun DailyForecastItem(
     dailyForecast: DailyForecast,

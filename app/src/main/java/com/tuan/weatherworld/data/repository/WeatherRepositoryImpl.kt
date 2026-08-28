@@ -13,6 +13,13 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Implementation production của [WeatherRepository] sử dụng Open-Meteo.
+ *
+ * Lớp gọi [WeatherRemoteDataSource] để nhận DTO, sau đó mapper chuyển DTO sang
+ * domain model. Khi tải nhiều địa điểm, các yêu cầu được chạy đồng thời và
+ * [kotlinx.coroutines.awaitAll] chỉ trả kết quả khi toàn bộ yêu cầu đã hoàn tất.
+ */
 @Singleton
 class WeatherRepositoryImpl @Inject constructor(
     private val remoteDataSource: WeatherRemoteDataSource,

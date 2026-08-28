@@ -7,6 +7,10 @@ import androidx.room.Query
 import com.tuan.weatherworld.data.source.location.local.entity.SavedLocationEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Các thao tác SQL được phép thực hiện trên danh sách địa điểm yêu thích.
+ * Room tự sinh implementation; [observeAll] phát danh sách mới mỗi khi bảng đổi.
+ */
 @Dao
 interface SavedLocationDao {
 

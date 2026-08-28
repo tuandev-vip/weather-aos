@@ -11,6 +11,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Cung cấp singleton Room database và DAO cho toàn ứng dụng.
+ *
+ * Dùng `object` + `@Provides` vì Room cần được tạo bằng `Room.databaseBuilder`,
+ * không phải một constructor mà Hilt có thể tự gọi bằng `@Inject`.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {

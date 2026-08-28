@@ -2,7 +2,12 @@ package com.tuan.weatherworld.data.location
 
 import com.tuan.weatherworld.data.model.WeatherLocation
 
-
+/**
+ * Các địa điểm mẫu dùng khi phát triển và làm dữ liệu dự phòng có chủ đích.
+ *
+ * Đây không phải nguồn dữ liệu yêu thích của người dùng; danh sách yêu thích thật
+ * được lưu bằng Room qua [com.tuan.weatherworld.data.repository.SavedLocationRepository].
+ */
 object DefaultWeatherLocations {
 
     val haNoi = WeatherLocation(

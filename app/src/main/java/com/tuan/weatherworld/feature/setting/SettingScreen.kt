@@ -18,9 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import com.tuan.weatherworld.R
 import com.tuan.weatherworld.core.design.WeatherTheme
 
+/**
+ * Placeholder của màn cài đặt trong Commit 10.
+ * Hiện màn chỉ kiểm tra route và callback quay lại; lựa chọn Celsius/Fahrenheit
+ * cùng DataStore cài đặt chưa được triển khai.
+ */
 @Composable
 fun SettingScreen(
     onBack: () -> Unit,
@@ -56,7 +62,8 @@ fun SettingScreen(
             Text(
                 text = stringResource(R.string.weather_brand),
                 style = WeatherTheme.textStyles.city,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.surface,
+                fontStyle = FontStyle.Italic
             )
 
         }

@@ -7,7 +7,12 @@ import com.tuan.weatherworld.data.source.weather.remote.WeatherApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
+/**
+ * Data source production giao tiếp với hai dịch vụ Open-Meteo qua Retrofit.
+ *
+ * Lớp chỉ nhận và trả DTO; việc chuyển sang domain model thuộc trách nhiệm của
+ * repository/mapper. Retrofit không bị lộ lên ViewModel hoặc UI.
+ */
 @Singleton
 class OpenMeteoWeatherRemoteDataSource @Inject constructor(
     private val weatherApi: WeatherApi,

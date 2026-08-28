@@ -1,34 +1,34 @@
 <resources>
+    <!-- Ứng dụng và điều hướng dùng chung -->
     <string name="app_name">Weather World</string>
+    <string name="navigation_back">Quay lại</string>
+
+    <!-- Màn thời tiết hiện tại -->
     <string name="weather_temperature_format">%1$d°</string>
     <string name="weather_high_temperature_format">C:%1$d°</string>
     <string name="weather_low_temperature_format">T:%1$d°</string>
     <string name="weather_open_locations">Địa điểm</string>
     <string name="weather_open_settings">Cài đặt</string>
-    <string name="navigation_back">Quay lại</string>
-
-    <!-- text of weather of day -->
     <string name="weather_now">Bây giờ</string>
 
-    <!-- text of weather of day -->
+    <!-- Dự báo theo giờ và theo ngày -->
     <string name="weather_today">Hôm nay</string>
     <string name="weather_daily_forecast_title">Dự báo 10 ngày</string>
     <string name="weather_low_high_temperature_format">%1$d° / %2$d°</string>
     <string name="weather_precipitation_format">%1$d%%</string>
 
-    <!-- location -->
+    <!-- Danh sách địa điểm yêu thích -->
     <string name="locations_title">Địa điểm yêu thích</string>
     <string name="locations_add">Thêm địa điểm</string>
     <string name="locations_empty">Tìm kiếm địa điểm bạn yêu thích để xem thời tiết chính xác</string>
-
-
-    <!-- location search -->
+    <!-- Tìm kiếm và thêm địa điểm -->
     <string name="locations_search_title">Tìm kiếm địa điểm yêu thích</string>
     <string name="locations_search_buton_back_title">Hủy</string>
     <string name="locations_search_hint">Nhập địa điểm bạn muốn tìm kiếm</string>
     <string name="locations_search_empty_idle">Tìm kiếm các địa điểm bạn yêu thích\nđể xem thời tiết hiện tại</string>
     <string name="locations_search_no_result">Không tìm thấy địa điểm nào </string>
     <string name="locations_search_already_exists">Địa điểm này đã có trong danh sách </string>
-    <!-- Brand -->
-    <string name="weather_brand">DEV BaVi</string>
+
+    <!-- Nhận diện thương hiệu -->
+    <string name="weather_brand">DEVBAVI</string>
 </resources>

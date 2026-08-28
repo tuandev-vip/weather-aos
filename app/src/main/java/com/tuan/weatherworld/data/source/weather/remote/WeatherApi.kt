@@ -4,6 +4,12 @@ import com.tuan.weatherworld.data.source.weather.dto.OpenMeteoForecastDto
 import retrofit2.http.Query
 import retrofit2.http.GET
 
+/**
+ * Hợp đồng Retrofit của Open-Meteo Forecast API.
+ *
+ * Retrofit tạo implementation lúc chạy, ghép `@GET` và các `@Query` thành request
+ * HTTP; Kotlinx Serialization chuyển JSON phản hồi thành [OpenMeteoForecastDto].
+ */
 interface WeatherApi {
     @GET("v1/forecast")
     suspend fun getForecast(

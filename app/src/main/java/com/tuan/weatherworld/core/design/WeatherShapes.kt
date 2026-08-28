@@ -4,7 +4,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-/** Shared corner-radius roles for Weather World components. */
+/** Các mức bo góc dùng chung cho component của Weather World. */
 object WeatherShapes {
     /** Small icon backgrounds and compact controls. */
     val small = RoundedCornerShape(8.dp)
@@ -25,7 +25,7 @@ object WeatherShapes {
     val pill = RoundedCornerShape(percent = 50)
 }
 
-/** Material 3 mapping so standard components follow Weather World shapes. */
+/** Ánh xạ sang Material 3 để component chuẩn dùng cùng hệ bo góc của ứng dụng. */
 val WeatherMaterialShapes = Shapes(
     extraSmall = WeatherShapes.small,
     small = WeatherShapes.medium,

@@ -11,6 +11,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
+/**
+ * Ánh xạ DTO dự báo của Open-Meteo sang [Weather] mà ứng dụng sử dụng.
+ *
+ * [location] do phía gọi cung cấp vì endpoint dự báo chỉ nhận tọa độ và không trả
+ * về tên địa điểm. Các danh sách lệch độ dài được bỏ qua an toàn bằng `getOrNull`.
+ */
 fun OpenMeteoForecastDto.toDomain(
     location: WeatherLocation,
 ): Weather {

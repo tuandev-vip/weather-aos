@@ -12,6 +12,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
+/**
+ * Cấu hình các singleton của tầng HTTP: Json, Retrofit và Open-Meteo API.
+ *
+ * Chỉ data source nhận các API này; repository và UI không import Retrofit.
+ * Hai dịch vụ Forecast và Geocoding có base URL riêng nhưng dùng chung cấu hình JSON.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

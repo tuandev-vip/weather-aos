@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Cài đặt [SavedLocationRepository] bằng Room.
+ *
+ * DAO chỉ làm việc với entity của cơ sở dữ liệu; repository chịu trách nhiệm ánh
+ * xạ entity sang [WeatherLocation] trước khi trả dữ liệu lên ViewModel.
+ */
 @Singleton
 class SavedLocationRepositoryImpl @Inject constructor(
 private val savedLocationDao: SavedLocationDao,

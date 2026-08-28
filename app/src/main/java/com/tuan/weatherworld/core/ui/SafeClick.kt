@@ -7,7 +7,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 
-
+/**
+ * Bọc callback để bỏ những lần bấm liên tiếp trong [interval] mili giây.
+ * `rememberUpdatedState` luôn gọi callback mới nhất mà không tạo lại bộ đếm click.
+ */
 @Composable
 fun rememberSafeClick(
     onClick: () -> Unit,

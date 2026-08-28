@@ -9,11 +9,10 @@ import androidx.compose.ui.unit.sp
 private val WeatherFontFamily = FontFamily.SansSerif
 
 /**
- * Named text roles for Weather World.
+ * Các vai trò chữ có tên dùng chung trong Weather World.
  *
- * The current temperature is intentionally the strongest visual element,
- * followed by the city name. Smaller roles support forecast sections and
- * compact favorite-location cards without declaring font sizes in features.
+ * Nhiệt độ hiện tại là điểm nhấn mạnh nhất, sau đó là tên thành phố. Các vai trò
+ * nhỏ hơn phục vụ phần dự báo và card yêu thích mà feature không phải tự đặt cỡ chữ.
  */
 object WeatherTextStyles {
     val temperature = TextStyle(fontFamily = WeatherFontFamily, fontWeight = FontWeight.Light, fontSize = 64.sp, lineHeight = 72.sp, letterSpacing = (-1).sp,)
@@ -27,7 +26,7 @@ object WeatherTextStyles {
     val label = TextStyle(fontFamily = WeatherFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.6.sp,)
 }
 
-/** Material 3 mapping so standard components inherit the same type scale. */
+/** Ánh xạ sang Material 3 để component chuẩn kế thừa cùng thang chữ. */
 val WeatherTypography = Typography(
     displayLarge = WeatherTextStyles.temperature,
     headlineLarge = WeatherTextStyles.city,

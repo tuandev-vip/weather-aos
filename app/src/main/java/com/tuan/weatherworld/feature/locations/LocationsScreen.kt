@@ -36,6 +36,11 @@ import com.tuan.weatherworld.core.design.WeatherTheme
 import com.tuan.weatherworld.data.model.Weather
 import com.tuan.weatherworld.data.model.WeatherLocation
 
+/**
+ * Hiển thị danh sách favorites từ [LocationsViewModel].
+ * Screen chỉ render UiState và phát sự kiện thêm/chọn địa điểm; việc lưu DataStore
+ * và tải thời tiết nằm trong ViewModel/Repository.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationsScreen(
@@ -78,7 +83,12 @@ fun LocationsScreen(
 
         LocationContent(
             uiState = uiState,
-            onLocationSelected = onLocationSelected,
+            onLocationSelected = { location ->
+                viewModel.selectLocation(
+                    location = location,
+                    onSelected = onLocationSelected
+                )
+            },
             modifier = Modifier.weight(1f),
         )
     }

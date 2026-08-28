@@ -16,11 +16,11 @@ private val LocalWeatherSpacing = staticCompositionLocalOf {
 }
 
 /**
- * Root design theme for Weather World.
+ * Theme gốc của Weather World.
  *
- * Material 3 receives the general color, typography and shape tokens. Custom
- * composition locals expose weather-condition palettes and spacing, which do
- * not have equivalent roles in MaterialTheme.
+ * Material 3 nhận color, typography và shape dùng chung. CompositionLocal cung
+ * cấp bảng màu trạng thái thời tiết và spacing vì MaterialTheme không có sẵn
+ * những vai trò riêng này.
  */
 @Composable
 fun WeatherTheme(
@@ -53,10 +53,10 @@ fun WeatherTheme(
 }
 
 /**
- * Accessor for Weather World tokens that are not part of MaterialTheme.
+ * Cổng truy cập token riêng của Weather World nằm ngoài MaterialTheme.
  *
- * Example usage: WeatherTheme.conditionColors.sunny or
- * WeatherTheme.spacing.cardPadding.
+ * Ví dụ: `WeatherTheme.conditionColors.sunny` hoặc
+ * `WeatherTheme.spacing.cardPadding`.
  */
 object WeatherTheme {
     val conditionColors: WeatherConditionColors

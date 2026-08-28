@@ -3,10 +3,10 @@ package com.tuan.weatherworld.core.design
 import androidx.compose.ui.unit.dp
 
 /**
- * A 4dp spacing scale shared by every Weather World feature.
+ * Hệ khoảng cách theo bước 4dp dùng chung cho mọi feature của Weather World.
  *
- * Features should prefer these tokens over declaring unrelated padding and
- * gap values. Semantic aliases document why a particular distance is used.
+ * Các màn hình nên dùng token này thay vì tự đặt padding/gap rời rạc. Tên ngữ
+ * nghĩa giúp người đọc hiểu khoảng cách đó dành cho card, section hay nội dung.
  */
 object WeatherSpacing {
     val space4 = 4.dp

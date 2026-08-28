@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tuan.weatherworld.data.model.WeatherLocation
 import com.tuan.weatherworld.data.repository.SaveLocationResult
 import com.tuan.weatherworld.data.repository.SavedLocationRepository
+import com.tuan.weatherworld.data.repository.SelectedLocationRepository
 import com.tuan.weatherworld.data.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** Trạng thái riêng của request tìm tên địa điểm qua Open-Meteo Geocoding. */
 sealed interface LocationSearchUiState {
     data object Idle : LocationSearchUiState
 
@@ -30,6 +32,11 @@ sealed interface LocationSearchUiState {
     data object NoResults : LocationSearchUiState
 }
 
+/**
+ * Trạng thái của thao tác lưu item đã chọn.
+ * Tách khỏi [LocationSearchUiState] để request tìm kiếm và ghi Room/DataStore
+ * không dùng chung một cờ Loading hoặc ghi đè kết quả của nhau.
+ */
 sealed class SavedLocationUiState {
     data object Idle : SavedLocationUiState()
     data object Adding : SavedLocationUiState()
@@ -38,12 +45,21 @@ sealed class SavedLocationUiState {
     data class Error(val message: String) : SavedLocationUiState()
 }
 
+/**
+ * Điều phối hai luồng của màn tìm kiếm địa điểm.
+ *
+ * Luồng tìm kiếm debounce 500 ms rồi gọi Geocoding API. Luồng chọn item lưu vào
+ * Room trước, sau đó lưu cùng địa điểm vào DataStore làm location mặc định; chỉ
+ * khi cả chuỗi thành công Screen mới nhận [SavedLocationUiState.Added] để điều hướng.
+ */
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
-    private val savedLocationRepository: SavedLocationRepository
+    private val savedLocationRepository: SavedLocationRepository,
+    private val selectedLocationRepository: SelectedLocationRepository,
 ) : ViewModel() {
 
+    // ---------- Trạng thái tìm kiếm ----------
     private val _searchQuery = MutableStateFlow("")
 
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
@@ -51,6 +67,7 @@ class LocationSearchViewModel @Inject constructor(
 
     val state: StateFlow<LocationSearchUiState> = _state.asStateFlow()
 
+    // ---------- Trạng thái lưu và chọn địa điểm ----------
     private val _savedLocationState =
         MutableStateFlow<SavedLocationUiState>(SavedLocationUiState.Idle)
     val savedLocationState: StateFlow<SavedLocationUiState> = _savedLocationState.asStateFlow()
@@ -59,6 +76,7 @@ class LocationSearchViewModel @Inject constructor(
         observeSearchQuery()
     }
 
+    // ---------- Luồng tìm kiếm có debounce ----------
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
     }
@@ -102,6 +120,7 @@ class LocationSearchViewModel @Inject constructor(
             }
     }
 
+    // ---------- Luồng Room -> DataStore -> điều hướng ----------
     fun onLocationSelected(location: WeatherLocation) {
         if (_savedLocationState.value == SavedLocationUiState.Adding) {
             return
@@ -115,13 +134,12 @@ class LocationSearchViewModel @Inject constructor(
     private suspend fun addLocationToDatabase(location: WeatherLocation) {
         _savedLocationState.value = SavedLocationUiState.Adding
         savedLocationRepository.saveLocation(location)
-            .onSuccess { saveLocationResult ->
-                when (saveLocationResult) {
-                    is SaveLocationResult.AlreadyExists -> _savedLocationState.value =
-                        SavedLocationUiState.AlreadyExists
+            .onSuccess { result ->
+                when (result) {
 
-                    is SaveLocationResult.Added -> _savedLocationState.value =
-                        SavedLocationUiState.Added(location = location)
+                    is SaveLocationResult.Added -> { saveAsSelectedLocation(location) }
+
+                    is SaveLocationResult.AlreadyExists -> { saveAsSelectedLocation(location) }
                 }
             }
             .onFailure { throwable ->
@@ -135,5 +153,20 @@ class LocationSearchViewModel @Inject constructor(
         if (_savedLocationState.value != SavedLocationUiState.Adding) {
             _savedLocationState.value = SavedLocationUiState.Idle
         }
+    }
+
+    private suspend fun saveAsSelectedLocation(
+        location: WeatherLocation,
+    ) {
+        selectedLocationRepository.saveSelectedLocation(location)
+            .onSuccess {
+                _savedLocationState.value = SavedLocationUiState.Added(location)
+            }
+            .onFailure { throwable ->
+                _savedLocationState.value = SavedLocationUiState.Error(
+                    message = throwable.message
+                        ?: "Không thể lưu địa điểm đang chọn",
+                )
+            }
     }
 }

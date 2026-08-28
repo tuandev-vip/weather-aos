@@ -41,9 +41,15 @@ import com.tuan.weatherworld.core.design.WWScreenScaffold
 import com.tuan.weatherworld.core.design.WeatherTheme
 import com.tuan.weatherworld.data.model.WeatherLocation
 
+/**
+ * Entry point của màn tìm kiếm: collect hai state độc lập từ ViewModel.
+ *
+ * Search state dựng danh sách kết quả; save state điều khiển khóa thao tác,
+ * Snackbar và callback [onLocationAdded]. Navigation vẫn thuộc AppNavGraph.
+ */
 @Composable
 fun LocationSearchScreen(
-    onBack: () -> Unit,
+    onBack: (() -> Unit)?,
     viewModel: LocationSearchViewModel = hiltViewModel(),
     onLocationAdded: (WeatherLocation) -> Unit,
 ) {
@@ -129,7 +135,8 @@ private fun LocationSearchContent(
             placeholder = {
                 Text(
                     text = stringResource(R.string.locations_search_hint),
-                    color = MaterialTheme.colorScheme.surface
+                    color = MaterialTheme.colorScheme.surface,
+                    maxLines = 1
                 )
             },
             leadingIcon = {

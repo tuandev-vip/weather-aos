@@ -15,12 +15,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/** Trạng thái tải dự báo của đúng một địa điểm trên WeatherScreen. */
 sealed interface WeatherUiState {
     data object Loading : WeatherUiState
     data class Success(val weather: Weather) : WeatherUiState
     data class Error(val message: String) : WeatherUiState
 }
 
+/**
+ * Đọc địa điểm từ navigation argument và tải dự báo qua [WeatherRepository].
+ *
+ * [SavedStateHandle] giữ tên, vĩ độ và kinh độ do `Routes.weather(...)` truyền
+ * sang. Đà Nẵng chỉ là fallback bảo vệ khi argument thiếu hoặc tọa độ không parse
+ * được; location đã chọn bình thường luôn đi theo route.
+ */
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
@@ -33,6 +41,7 @@ class WeatherViewModel @Inject constructor(
 
     val state: StateFlow<WeatherUiState> = _state.asStateFlow()
 
+    // ---------- Đọc navigation arguments ----------
     private val defaultLocation = DefaultWeatherLocations.daNang
 
     private val locationName: String =
@@ -63,8 +72,7 @@ class WeatherViewModel @Inject constructor(
         loadWeather(location)
     }
 
-
-
+    // ---------- Tải dữ liệu và cập nhật UiState ----------
     fun loadWeather(location: WeatherLocation) {
         viewModelScope.launch {
             _state.value = WeatherUiState.Loading

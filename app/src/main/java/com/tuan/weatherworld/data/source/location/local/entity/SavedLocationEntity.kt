@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Một hàng trong bảng Room `saved_locations`.
+ *
+ * Chỉ một hàng được phép tồn tại cho cùng cặp vĩ độ/kinh độ; vì vậy thêm lại một
+ * địa điểm sẽ bị `OnConflictStrategy.IGNORE` của DAO bỏ qua thay vì tạo bản sao.
+ */
 @Entity(
     tableName = "saved_locations",
     indices = [

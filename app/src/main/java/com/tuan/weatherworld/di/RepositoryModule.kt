@@ -10,6 +10,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Chọn implementation production cho các repository dạng interface.
+ *
+ * Module là abstract và dùng `@Binds` vì Hilt chỉ cần biết quan hệ
+ * interface -> implementation; không có logic khởi tạo thủ công để thực thi.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {

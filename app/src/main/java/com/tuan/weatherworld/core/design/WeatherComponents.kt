@@ -17,7 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.tuan.weatherworld.core.ui.rememberSafeClick
 
-
+/**
+ * Scaffold dùng chung cho các màn có TopAppBar của Weather World.
+ *
+ * Screen truyền nội dung và callback; component thống nhất màu, typography,
+ * nút quay lại, action và Snackbar mà không giữ NavController.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WWScreenScaffold(

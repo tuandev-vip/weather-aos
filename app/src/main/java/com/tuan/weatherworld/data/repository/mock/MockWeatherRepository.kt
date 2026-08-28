@@ -6,6 +6,12 @@ import com.tuan.weatherworld.data.repository.WeatherRepository
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * Test double chạy hoàn toàn trong bộ nhớ cho [WeatherRepository].
+ *
+ * Lớp được giữ lại để demo hoặc test mà không cần mạng; production hiện được Hilt
+ * bind với [com.tuan.weatherworld.data.repository.WeatherRepositoryImpl].
+ */
 class MockWeatherRepository @Inject constructor() : WeatherRepository {
     override suspend fun getWeather(location: WeatherLocation): Result<Weather> {
         val weather = MockWeatherData.locations.firstOrNull { item ->
