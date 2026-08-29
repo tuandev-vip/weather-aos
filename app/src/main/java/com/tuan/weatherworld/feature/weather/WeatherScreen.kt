@@ -18,8 +18,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Radio
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.outlined.LocationCity
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -189,12 +192,12 @@ private fun WWScaffold(
                 onClick = onOpenLocations,
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.List,
+                    imageVector = Icons.Outlined.LocationOn,
                     contentDescription = stringResource(
                         R.string.weather_open_locations,
                     ),
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(28.dp)
                 )
             }
             IconButton(

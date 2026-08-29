@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tuan.weatherworld.R
+import com.tuan.weatherworld.core.design.WWScreenScaffold
 import com.tuan.weatherworld.core.design.WeatherTheme
 import com.tuan.weatherworld.core.ui.asString
 import com.tuan.weatherworld.data.model.Weather
@@ -52,47 +53,33 @@ fun LocationsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = WeatherTheme.spacing.space16),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.locations_title),
-                style = WeatherTheme.textStyles.city,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            WWScreenScaffold(
+                title = stringResource(R.string.locations_title),
+                action = {
+                    IconButton(
+                        onClick = onAddLocation,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddCircle,
+                            contentDescription = stringResource(R.string.locations_add),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            ) { paddingValues ->
+                    LocationContent(
+                        uiState = uiState,
+                        onLocationSelected = { location ->
+                            viewModel.selectLocation(
+                                location = location,
+                                onSelected = onLocationSelected
+                            )
+                        },
+                        modifier = Modifier.padding(paddingValues)
+                    )
 
-            IconButton(
-                onClick = onAddLocation,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = stringResource(R.string.locations_add),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
             }
-        }
 
-        LocationContent(
-            uiState = uiState,
-            onLocationSelected = { location ->
-                viewModel.selectLocation(
-                    location = location,
-                    onSelected = onLocationSelected
-                )
-            },
-            modifier = Modifier.weight(1f),
-        )
-    }
 }
 
 @Composable

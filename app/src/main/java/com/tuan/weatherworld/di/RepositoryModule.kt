@@ -2,6 +2,8 @@ package com.tuan.weatherworld.di
 
 import com.tuan.weatherworld.data.repository.SavedLocationRepository
 import com.tuan.weatherworld.data.repository.SavedLocationRepositoryImpl
+import com.tuan.weatherworld.data.repository.SettingsRepository
+import com.tuan.weatherworld.data.repository.SettingsRepositoryImpl
 import com.tuan.weatherworld.data.repository.WeatherRepository
 import com.tuan.weatherworld.data.repository.WeatherRepositoryImpl
 import dagger.Binds
@@ -30,4 +32,10 @@ abstract class RepositoryModule {
     abstract fun bindSavedLocationRepository(
         implementation: SavedLocationRepositoryImpl
     ): SavedLocationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        implementation: SettingsRepositoryImpl,
+    ): SettingsRepository
 }

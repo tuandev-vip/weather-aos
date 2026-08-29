@@ -2,17 +2,6 @@
 
 Weather World là dự án Android học tập về ứng dụng thời tiết, được xây dựng từng bước từ giao diện Jetpack Compose cơ bản đến dữ liệu thời tiết thật.
 
-> Trạng thái hiện tại: **Commit 08 và Commit 09 đã hoàn thành; Commit 10 đang triển khai** — app đã lưu selected location bằng DataStore, lấy GPS, nối reverse geocoding, chuyển sang tìm kiếm thủ công khi không lấy được vị trí và đã có error model thống nhất cho luồng Weather API.
-
-## Mục tiêu học tập
-
-- Luyện xây dựng giao diện bằng Jetpack Compose và Material 3.
-- Biết tách màn hình, component, màu sắc, typography và spacing thành các file phù hợp.
-- Hiểu state, StateFlow và luồng dữ liệu một chiều trong Compose.
-- Học MVVM, Repository và cách thay dữ liệu giả bằng API thật mà không viết lại UI.
-- Làm quen dần với Coroutines, Hilt, DataStore, Room và testing.
-- Tạo lịch sử Git gồm các commit nhỏ, rõ mục tiêu và dễ review.
-
 ## Package name
 
 Package được chốt cho dự án:
@@ -85,8 +74,6 @@ Project foundation
     → DataStore + current location
     → testing
 ```
-
-Roadmap chi tiết và ghi chú học tập được giữ cục bộ, không đưa lên repository công khai. README này chỉ trình bày kiến trúc, tính năng và cách chạy cần thiết cho người xem project.
 
 ## Nguyên tắc kiến trúc
 
@@ -188,8 +175,6 @@ System Splash
                      ↓
              mở WeatherScreen
 ```
-
-`MockWeatherRepository` và `MockWeatherData` vẫn được giữ trong source để học/test, nhưng `RepositoryModule` runtime đã bind `WeatherRepository` sang `WeatherRepositoryImpl`.
 
 Luồng lỗi của Weather API:
 

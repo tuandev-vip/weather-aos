@@ -11,10 +11,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import com.tuan.weatherworld.core.ui.rememberSafeClick
 
 /**
@@ -39,12 +41,13 @@ fun WWScreenScaffold(
         snackbarHost = snackBarHost,
         topBar = {
             if (title != null || onIconBack != null) {
-                CenterAlignedTopAppBar(
+                TopAppBar(
                     title = {
                         Text(
                             text = title.orEmpty(),
-                            style = WeatherTheme.textStyles.sectionTitle,
+                            style = WeatherTheme.textStyles.city,
                             color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Start
                         )
                     },
                     navigationIcon = {

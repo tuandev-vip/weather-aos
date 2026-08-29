@@ -22,7 +22,7 @@
     <string name="locations_add">Thêm địa điểm</string>
     <string name="locations_empty">Tìm kiếm địa điểm bạn yêu thích để xem thời tiết chính xác</string>
     <!-- Tìm kiếm và thêm địa điểm -->
-    <string name="locations_search_title">Tìm kiếm địa điểm yêu thích</string>
+    <string name="locations_search_title">Thêm địa điểm yêu thích</string>
     <string name="locations_search_buton_back_title">Hủy</string>
     <string name="locations_search_hint">Nhập địa điểm bạn muốn tìm kiếm</string>
     <string name="locations_search_empty_idle">Tìm kiếm các địa điểm bạn yêu thích\nđể xem thời tiết hiện tại</string>
@@ -42,4 +42,12 @@
     <string name="error_location_unavailable">Không thể xác định vị trí hiện tại của thiết bị.</string>
     <string name="error_storage_failure">Không thể đọc hoặc lưu dữ liệu trên thiết bị.</string>
     <string name="error_unknown">Đã xảy ra lỗi. Vui lòng thử lại.</string>
+
+    <!-- Setting -->
+    <string name="title_setting">Cài đặt</string>
+    <string name="title_unit">Đơn vị</string>
+    <string name="title_alert">Cảnh báo thời tiết</string>
+    <string name="setting_temperature_celsius">Độ C (°C)</string>
+    <string name="setting_temperature_fahrenheit">Độ F (°F)</string>
+    <string name="setting_temperature_title">Nhiệt độ</string>
 </resources>

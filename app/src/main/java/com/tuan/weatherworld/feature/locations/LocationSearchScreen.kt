@@ -128,7 +128,6 @@ private fun LocationSearchContent(
 ) {
     Column(
         modifier = modifier,
-
         ) {
 
         Spacer(Modifier.size(WeatherTheme.spacing.space32))
